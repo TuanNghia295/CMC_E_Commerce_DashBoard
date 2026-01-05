@@ -3,7 +3,6 @@ import axios, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
-  InternalAxiosRequestConfig,
 } from 'axios';
 import { END_POINTS } from './endpoints';
 import { useUserStore } from '../store/userStore';

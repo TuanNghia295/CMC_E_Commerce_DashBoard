@@ -1,11 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {jwtDecode} from 'jwt-decode';
 import {create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
 import AxiosClient from '../constants/axiosClient';
+import { AxiosResponse } from 'axios';
 
 type DecodeToken = {
   exp: number;
   [key: string]: any; 
+};
+
+
+type RefreshToken = {
+  access_token: string;
 };
 
 type UserState = {
@@ -66,25 +73,23 @@ export const useUserStore = create<UserState>()(
         }
       },
       refreshAccessToken: async () => {
-        // backend sẽ lấy refreshToken từ cookie,
-        try {
-          const res = await AxiosClient.post('refresh');
-          if (res?.accessToken) {
-            await get().setAccessToken(res.accessToken);
-            // Nếu backend trả về refreshToken mới, vẫn cập nhật vào state (không lưu localStorage)
-            if (res.refreshToken) {
-              await get().setRefreshToken(res.refreshToken);
-            }
-            console.log('🔄 Refresh token thành công');
-            return true;
-          }
-          return res;
-        } catch (error) {
-          console.log('❌ Refresh token thất bại', error);
-          await get().logout();
-          return false;
+      try {
+        const res: AxiosResponse<RefreshToken> = await AxiosClient.post('refresh');
+
+        if (res.data?.access_token) {
+          await get().setAccessToken(res.data.access_token);
+          console.log('🔄 Refresh token thành công');
+          return true;
         }
+
+        return false;
+      } catch (error) {
+        console.log('❌ Refresh token thất bại', error);
+        await get().logout();
+        return false;
+      }
       },
+
 
       logout: async () => {
         await localStorage.removeItem('accessToken');
