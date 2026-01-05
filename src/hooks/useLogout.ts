@@ -21,7 +21,7 @@ export function useLogout() {
   return useMutation<LogoutSuccess, AxiosError<LogoutError>, void>({
     mutationFn: async (): Promise<LogoutSuccess> => {
       const res: AxiosResponse<LogoutSuccess> = await AxiosClient.post(
-        "auth/logout",
+        "admin/auth/logout",
         undefined,
         { withCredentials: true }
       );
@@ -34,8 +34,8 @@ export function useLogout() {
       console.log("[LOGOUT SUCCESS]:", data?.message);
     },
     onError: () => {
-      //  cleanup();
-      //  navigate("/signin");
+       cleanup();
+       navigate("/signin");
     },
   });
 }

@@ -23,7 +23,7 @@ export function useLogin() {
   return useMutation({
     mutationFn: async (data: LoginForm): Promise<LoginResponse> => {
       const res = await AxiosClient.post<LoginResponse>(
-        'auth/login',
+        'admin/auth/login',
         data
       );
       return res;
