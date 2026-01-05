@@ -9,14 +9,6 @@ import Button from "../ui/button/Button";
 import { useLogin } from "../../hooks/useLogin";
 import Alert from "../../components/ui/alert/Alert";
 
-interface ApiErrorResponse {
-  response: {
-    data: {
-      message: string;
-    };
-  };
-}
-
 
 export default function SignInForm() {
   const navigate = useNavigate();
@@ -135,7 +127,7 @@ const apiErrorMessage =  isError ? error?.message : ""
               )}
 
               {/* Submit */}
-              <Button className="w-full" size="sm" disabled={isPending}>
+              <Button className="w-full" size="sm" disabled={isPending} >
                 {isPending ? "Signing in..." : "Sign in"}
               </Button>
             </div>
