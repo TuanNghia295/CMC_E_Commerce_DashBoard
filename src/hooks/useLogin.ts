@@ -8,14 +8,16 @@ export type LoginForm = {
 };
 
 export type LoginResponse = {
-  accessToken: string;
-  refreshToken?: string;
-  userInfo?: any;
-};
+  access_token: string;
+  user: {
+    id: number;
+    email: string;
+    name: string;
+  };
+}
 
 export function useLogin() {
   const setAccessToken = useUserStore((s) => s.setAccessToken);
-  const setRefreshToken = useUserStore((s) => s.setRefreshToken);
   const setUserInfo = useUserStore((s) => s.setUserInfo);
 
   return useMutation({
@@ -27,9 +29,8 @@ export function useLogin() {
       return res;
     },
     onSuccess: (data) => {
-      setAccessToken(data.accessToken);
-      if (data.refreshToken) setRefreshToken(data.refreshToken);
-      if (data.userInfo) setUserInfo(data.userInfo);
+      setAccessToken(data.access_token);
+      setUserInfo(data.user);
     },
   });
 }
