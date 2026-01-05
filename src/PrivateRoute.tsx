@@ -1,12 +1,28 @@
 import { Navigate, Outlet } from "react-router";
+import { jwtDecode } from "jwt-decode";
 
-function isAuthenticated() {
-  const accessToken = localStorage.getItem("access_token");
-  const refreshToken = localStorage.getItem("refresh_token");
-  // Kiểm tra token có tồn tại và hợp lệ (có thể thêm kiểm tra hết hạn nếu cần)
-  return !!accessToken && !!refreshToken;
+interface JwtPayload{
+  exp: number;
 }
 
+function isAccessTokenValid() {
+  const token = localStorage.getItem("accessToken");
+  if (!token) return false;
+
+  try {
+    const decoded = jwtDecode<JwtPayload>(token);
+    const now = Date.now() / 1000;
+
+    return decoded.exp > now;
+  } catch (err) {
+    console.error("Something wrong with accessToken",err);
+    return false;
+  }
+}
+
+
 export default function PrivateRoute() {
-  return isAuthenticated() ? <Outlet /> : <Navigate to="/signin" replace />;
+  return isAccessTokenValid()
+    ? <Outlet />
+    : <Navigate to="/signin" replace />;
 }
