@@ -23,16 +23,16 @@ const AxiosClient: TypedAxiosInstance = axios.create({
 }) as TypedAxiosInstance;
 
 // 🟡 Request Interceptor
-AxiosClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+AxiosClient.interceptors.request.use((config) => {
+  if (!config.url?.includes("auth/logout")) {
     const token = useUserStore.getState().accessToken;
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    return config;
-  },
-  (error: AxiosError) => Promise.reject(error),
-);
+  }
+  return config;
+});
+
 
 // 🟢 Response Interceptor — trả về data trực tiếp
 AxiosClient.interceptors.response.use(
@@ -40,12 +40,12 @@ AxiosClient.interceptors.response.use(
     return response.data;
   },
   async (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      const {setAccessToken, setUserInfo} = useUserStore.getState();
+    const {setAccessToken, setUserInfo} = useUserStore.getState();
+    if ( error.response?.status === 401 && !error.config?.url?.includes("auth/logout")) {
       setAccessToken(null);
       setUserInfo(null);
-      await localStorage.removeItem('accessToken');
-    }
+      localStorage.removeItem("access_token");
+}
     return Promise.reject(error.response?.data || error);
   },
 );
