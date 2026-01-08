@@ -15,13 +15,13 @@ export default defineConfig({
       },
     }),
   ],
-  server:{
-    proxy:{
-      "/api":{
-        target: "http://3.211.240.229:3000",
-        changeOrigin: true,
-        secure: false
-        }
-      }
-    }
+  // server:{
+  //   proxy:{
+  //     "/api":{
+  //       target: "http://3.211.240.229:3000",
+  //       changeOrigin: true,
+  //       secure: false
+  //       }
+  //     }
+  //   }
 });
