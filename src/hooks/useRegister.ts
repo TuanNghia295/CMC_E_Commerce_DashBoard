@@ -14,6 +14,7 @@ export type RegisterForm = {
 
 export type RegisterResponse = {
     access_token:string,
+    refresh_token:string,
     user:{
      id: number;
      email: string;

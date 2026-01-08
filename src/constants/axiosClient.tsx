@@ -18,7 +18,6 @@ interface TypedAxiosInstance extends AxiosInstance {
 const AxiosClient: TypedAxiosInstance = axios.create({
   baseURL: END_POINTS,
   timeout: 10000,
-  withCredentials:true, // dùng để gửi cookie
 }) as TypedAxiosInstance;
 
 // 🟡 Request Interceptor
@@ -39,11 +38,10 @@ AxiosClient.interceptors.response.use(
     return response.data;
   },
   async (error: AxiosError) => {
-    const {setAccessToken, setUserInfo} = useUserStore.getState();
+    const {setTokens, setUserInfo} = useUserStore.getState();
     if ( error.response?.status === 401 && !error.config?.url?.includes("auth/logout")) {
-      setAccessToken(null);
+      setTokens(null,null);
       setUserInfo(null);
-      localStorage.removeItem("access_token");
 }
     return Promise.reject(error.response?.data || error);
   },
