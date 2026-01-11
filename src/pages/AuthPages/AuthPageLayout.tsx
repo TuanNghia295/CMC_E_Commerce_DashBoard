@@ -26,7 +26,7 @@ export default function AuthLayout({
                 />
               </Link>
               <p className="text-center text-white dark:text-white/60">
-                E-Commerce platform for retailing Nike products (Shoes, Jackets, T-Shirts)
+                ADMIN DASHBOARD
               </p>
             </div>
           </div>
