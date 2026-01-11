@@ -36,6 +36,8 @@ export function useLogin() {
    onSuccess: (data) => {
       setTokens(data.access_token, data.refresh_token);
       setUserInfo(data.user);
-    }
+    },
+    onError: (e)=> console.log("error",e)
+    
   });
 }

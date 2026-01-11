@@ -1,19 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 
-// Assume these icons are imported from an icon library
 import {
-  BoxCubeIcon,
-  CalenderIcon,
+  BoxIcon,
+  BoxIconLine,
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
-  ListIcon,
-  PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  TableIcon,
+  MailIcon,
+  ShootingStarIcon,
+  TaskIcon,
   UserCircleIcon,
+  DollarLineIcon,
+  PieChartIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
@@ -29,66 +28,95 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
-  },
-  {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/calendar",
+    path: "/",
   },
   {
     icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
-  },
-  {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
+    name: "User Management",
     subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
+      { name: "User List", path: "/users", pro: false },
+      { name: "Add User", path: "/users/new", pro: false },
+      { name: "Roles & Permissions", path: "/users/roles", pro: false },
+    ],
+  },
+  {
+    icon: <BoxIcon />,
+    name: "Products",
+    subItems: [
+      { name: "Product List", path: "/products", pro: false },
+      { name: "Add Product", path: "/products/new", pro: false },
+      { name: "Categories", path: "/categories", pro: false },
+      { name: "Brands", path: "/brands", pro: false },
+      { name: "Reviews", path: "/products/reviews", pro: false },
+    ],
+  },
+  {
+    icon: <ShootingStarIcon />,
+    name: "Orders",
+    subItems: [
+      { name: "All Orders", path: "/orders", pro: false },
+      { name: "Pending", path: "/orders/pending", pro: false },
+      { name: "Processing", path: "/orders/processing", pro: false },
+      { name: "Delivered", path: "/orders/delivered", pro: false },
+      { name: "Cancelled", path: "/orders/cancelled", pro: false },
+    ],
+  },
+  
+  {
+    icon: <DollarLineIcon />,
+    name: "Marketing",
+    subItems: [
+      { name: "Campaigns", path: "/marketing/campaigns", pro: false },
+      { name: "Coupons & Discounts", path: "/marketing/coupons", pro: false },
+      { name: "Email Marketing", path: "/marketing/emails", pro: false },
+      { name: "Banners", path: "/marketing/banners", pro: false },
+    ],
+  },
+  {
+    icon: <PieChartIcon />,
+    name: "Analytics & Reports",
+    subItems: [
+      { name: "Sales Report", path: "/analytics/sales", pro: false },
+      { name: "Revenue Report", path: "/analytics/revenue", pro: false },
+      { name: "Product Analytics", path: "/analytics/products", pro: false },
+      { name: "Customer Insights", path: "/analytics/customers", pro: false },
     ],
   },
 ];
 
 const othersItems: NavItem[] = [
   {
-    icon: <PieChartIcon />,
-    name: "Charts",
+    icon: <BoxIconLine />,
+    name: "Inventory",
     subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
+      { name: "Stock Management", path: "/inventory/stock", pro: false },
+      { name: "Suppliers", path: "/inventory/suppliers", pro: false },
+      { name: "Warehouses", path: "/inventory/warehouses", pro: false },
     ],
   },
   {
-    icon: <BoxCubeIcon />,
-    name: "UI Elements",
+    icon: <MailIcon />,
+    name: "Communications",
     subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
+      { name: "Messages", path: "/messages", pro: false },
+      { name: "Notifications", path: "/notifications", pro: false },
+      { name: "Email Templates", path: "/email-templates", pro: false },
     ],
   },
   {
-    icon: <PlugInIcon />,
-    name: "Authentication",
+    icon: <TaskIcon />,
+    name: "Settings",
     subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
+      { name: "General Settings", path: "/settings/general", pro: false },
+      { name: "Payment Gateway", path: "/settings/payment", pro: false },
+      { name: "Shipping Settings", path: "/settings/shipping", pro: false },
+      { name: "Tax Settings", path: "/settings/tax", pro: false },
     ],
+  },
+  {
+    icon: <UserCircleIcon />,
+    name: "Profile",
+    path: "/profile",
   },
 ];
 
@@ -343,7 +371,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
+                  "E-Commerce"
                 ) : (
                   <HorizontaLDots className="size-6" />
                 )}
@@ -359,7 +387,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
+                  "System"
                 ) : (
                   <HorizontaLDots />
                 )}
