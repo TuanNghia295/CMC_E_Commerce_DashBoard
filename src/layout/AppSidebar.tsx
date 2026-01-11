@@ -35,8 +35,6 @@ const navItems: NavItem[] = [
     name: "User Management",
     subItems: [
       { name: "User List", path: "/users", pro: false },
-      { name: "Add User", path: "/users/new", pro: false },
-      { name: "Roles & Permissions", path: "/users/roles", pro: false },
     ],
   },
   {

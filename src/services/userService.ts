@@ -20,7 +20,9 @@ export const userApi = {
   },
 
   createUser: async (data: UserCreateInput): Promise<User> => {
-    return AxiosClient.post<User>("/admin/users", data);
+    return AxiosClient.post<User>("/admin/users", {
+      user:data
+    });
   },
 
   updateUser: async (id: number, data: UserUpdateInput): Promise<User> => {

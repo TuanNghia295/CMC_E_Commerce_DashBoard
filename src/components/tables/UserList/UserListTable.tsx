@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -7,22 +7,19 @@ import {
   TableRow,
 } from "../../ui/table";
 import DateRangePicker from "../../common/DateRangePicker/DateRangePicker";
-import { userApi } from "../../../services/userService";
 import type { User, UserQueryParams, UserCreateInput, UserUpdateInput } from "../../../types/user";
 import UserFormModal from "../../modals/UserFormModal";
 import DeleteConfirmModal from "../../modals/DeleteConfirmModal";
+import { useUsers } from "../../../hooks/useUsers";
+import { useCreateUser } from "../../../hooks/useCreateUser";
+import { useUpdateUser } from "../../../hooks/useUpdateUser";
+import { useDeleteUser } from "../../../hooks/useDeleteUser";
 
 export default function UserListTable() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   // Pagination and filter states
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
   const [perPage, setPerPage] = useState(10);
-  
+
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"full_name" | "email">("full_name");
@@ -35,48 +32,35 @@ export default function UserListTable() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [formMode, setFormMode] = useState<"create" | "edit">("create");
-  const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  // Query params for API call
+  const [queryParams, setQueryParams] = useState<UserQueryParams>({
+    page: 1,
+    per_page: 10,
+    sort_by: "full_name",
+    sort_dir: "asc",
+  });
 
-      const params: UserQueryParams = {
-        page: currentPage,
-        per_page: perPage,
-        q: searchQuery || undefined,
-        sort_by: sortBy,
-        sort_dir: sortDir,
-        from_date: startDate ? startDate.toISOString().split("T")[0] : undefined,
-        to_date: endDate ? endDate.toISOString().split("T")[0] : undefined,
-      };
+  // React Query hooks
+  const { data, isLoading, error } = useUsers(queryParams);
+  const createUserMutation = useCreateUser();
+  const updateUserMutation = useUpdateUser();
+  const deleteUserMutation = useDeleteUser();
 
-      console.log("Fetching users with params:", params);
-
-      const response = await userApi.getUsers(params);
-
-      console.log("API Response:", response);
-
-      setUsers(response.data);
-      setTotalPages(response.meta.total_pages);
-      setTotalCount(response.meta.total_count);
-    } catch (err) {
-      console.error("Error fetching users:", err);
-      setError("Failed to fetch users. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, [currentPage, perPage, sortBy, sortDir, startDate, endDate]);
+  const users = data?.data || [];
+  const totalPages = data?.meta.total_pages || 1;
+  const totalCount = data?.meta.total_count || 0;
 
   const handleSearch = () => {
     console.log("Search button clicked with query:", searchQuery);
+    setQueryParams({
+      ...queryParams,
+      page: 1,
+      q: searchQuery || undefined,
+      from_date: startDate ? startDate.toISOString().split("T")[0] : undefined,
+      to_date: endDate ? endDate.toISOString().split("T")[0] : undefined,
+    });
     setCurrentPage(1);
-    fetchUsers();
   };
 
   const handleClearFilters = () => {
@@ -84,23 +68,51 @@ export default function UserListTable() {
     setSearchQuery("");
     setStartDate(null);
     setEndDate(null);
+    setQueryParams({
+      page: 1,
+      per_page: perPage,
+      sort_by: sortBy,
+      sort_dir: sortDir,
+    });
     setCurrentPage(1);
   };
 
-  // Auto-fetch when filters are cleared
-  useEffect(() => {
-    if (!searchQuery && !startDate && !endDate) {
-      fetchUsers();
-    }
-  }, [searchQuery, startDate, endDate]);
-
   const handleSort = (column: "full_name" | "email") => {
-    if (sortBy === column) {
-      setSortDir(sortDir === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(column);
-      setSortDir("asc");
-    }
+    const newSortDir = sortBy === column && sortDir === "asc" ? "desc" : "asc";
+    setSortBy(column);
+    setSortDir(newSortDir);
+    setQueryParams({
+      ...queryParams,
+      sort_by: column,
+      sort_dir: newSortDir,
+    });
+  };
+
+  const handleSortToggle = () => {
+    const newSortDir = sortDir === "asc" ? "desc" : "asc";
+    setSortDir(newSortDir);
+    setQueryParams({
+      ...queryParams,
+      sort_dir: newSortDir,
+    });
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    setQueryParams({
+      ...queryParams,
+      page: newPage,
+    });
+  };
+
+  const handlePerPageChange = (newPerPage: number) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1);
+    setQueryParams({
+      ...queryParams,
+      page: 1,
+      per_page: newPerPage,
+    });
   };
 
   const formatDate = (dateString: string) => {
@@ -130,36 +142,34 @@ export default function UserListTable() {
   };
 
   const handleFormSubmit = async (data: UserCreateInput | UserUpdateInput) => {
-      if (formMode === "create") {
-        await userApi.createUser(data as UserCreateInput);
-      } else if (selectedUser) {
-        await userApi.updateUser(selectedUser.id, data as UserUpdateInput);
-      }
-      await fetchUsers();
-      setIsFormModalOpen(false);
+    if (formMode === "create") {
+      await createUserMutation.mutateAsync(data as UserCreateInput);
+    } else if (selectedUser) {
+      await updateUserMutation.mutateAsync({
+        id: selectedUser.id,
+        data: data as UserUpdateInput,
+      });
+    }
+    setIsFormModalOpen(false);
   };
 
   const handleDeleteConfirm = async () => {
     if (!selectedUser) return;
 
     try {
-      setIsDeleting(true);
-      await userApi.deleteUser(selectedUser.id);
-      await fetchUsers();
+      await deleteUserMutation.mutateAsync(selectedUser.id);
       setIsDeleteModalOpen(false);
       setSelectedUser(null);
     } catch (err) {
       console.error("Error deleting user:", err);
       alert("Failed to delete user. Please try again.");
-    } finally {
-      setIsDeleting(false);
     }
   };
 
   if (error) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-red-500">{error}</div>
+        <div className="text-red-500">Failed to load users. Please try again.</div>
       </div>
     );
   }
@@ -182,7 +192,7 @@ export default function UserListTable() {
 
           {/* Left side: Search + Date */}
           <div className="flex flex-col sm:flex-row gap-3 flex-1">
-            
+
             {/* Search */}
             <div className="flex-1">
               <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -221,8 +231,8 @@ export default function UserListTable() {
             </button>
 
             <button
-              onClick={() => setSortDir(sortDir === "asc" ? "desc" : "asc")}
-              className="px-3 py-2 text-sm bg-gray-200 text-gray-700 rounded-md 
+              onClick={handleSortToggle}
+              className="px-3 py-2 text-sm bg-gray-200 text-gray-700 rounded-md
                         hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
             >
               {sortDir === "asc" ? "A-Z ↑" : "Z-A ↓"}
@@ -231,7 +241,7 @@ export default function UserListTable() {
             {(searchQuery || startDate || endDate) && (
               <button
                 onClick={handleClearFilters}
-                className="px-3 py-2 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200 
+                className="px-3 py-2 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200
                           dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
               >
                 Clear
@@ -240,9 +250,9 @@ export default function UserListTable() {
           </div>
         </div>
       </div>
-      
+
       {/* Table Section */}
-      {loading ? <div className="flex justify-center items-center h-64">
+      {isLoading ? <div className="flex justify-center items-center h-64">
         <div className="text-gray-500 dark:text-gray-400">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           Loading users...
@@ -354,7 +364,7 @@ export default function UserListTable() {
       </div>
       ) }
 
-      
+
 
       {/* Pagination Section */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-white dark:bg-white/[0.03] p-4 rounded-xl border border-gray-200 dark:border-white/[0.05]">
@@ -364,10 +374,7 @@ export default function UserListTable() {
           </label>
           <select
             value={perPage}
-            onChange={(e) => {
-              setPerPage(Number(e.target.value));
-              setCurrentPage(1);
-            }}
+            onChange={(e) => handlePerPageChange(Number(e.target.value))}
             className="px-3 py-1 border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white"
           >
             <option value={5}>5</option>
@@ -383,7 +390,7 @@ export default function UserListTable() {
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
             disabled={currentPage === 1}
             className="px-3 py-1 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-white"
           >
@@ -393,7 +400,7 @@ export default function UserListTable() {
             Page {currentPage} of {totalPages}
           </span>
           <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
             disabled={currentPage === totalPages}
             className="px-3 py-1 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-white"
           >
@@ -416,7 +423,7 @@ export default function UserListTable() {
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
         userName={selectedUser?.full_name || ""}
-        isDeleting={isDeleting}
+        isDeleting={deleteUserMutation.isPending}
       />
     </div>
   );
