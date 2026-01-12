@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router";
 import { useVerifyEmail } from "../../hooks/useVerifyEmail";
@@ -11,7 +12,7 @@ export default function VerifyEmail() {
     "loading" | "success" | "error" | "invalid"
   >("loading");
 
-  const { mutate: verifyEmail, isError, error } = useVerifyEmail();
+  const { mutate: verifyEmail, error } = useVerifyEmail();
 
   useEffect(() => {
     if (!token) {
@@ -75,11 +76,12 @@ export default function VerifyEmail() {
         {/* Error State */}
         {verificationStatus === "error" && (
           <div className="text-center">
-            <XCircleIcon className="w-16 h-16 mx-auto text-red-500" />
+            <CheckCircleIcon className="w-16 h-16 mx-auto text-red-500" />
             <h2 className="mt-4 text-2xl font-bold text-gray-800 dark:text-white">
               Verification Failed
             </h2>
             <p className="mt-2 text-gray-600 dark:text-gray-400">
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               {(error as any)?.error || "Invalid or expired verification token"}
             </p>
             <div className="mt-6 space-y-3">
@@ -102,7 +104,7 @@ export default function VerifyEmail() {
         {/* Invalid Token State */}
         {verificationStatus === "invalid" && (
           <div className="text-center">
-            <XCircleIcon className="w-16 h-16 mx-auto text-red-500" />
+            <CheckCircleIcon className="w-16 h-16 mx-auto text-red-500" />
             <h2 className="mt-4 text-2xl font-bold text-gray-800 dark:text-white">
               Invalid Verification Link
             </h2>
