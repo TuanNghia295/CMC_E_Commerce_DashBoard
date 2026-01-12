@@ -171,12 +171,12 @@ export default function SignInForm() {
           </form>
 
           {/* Footer */}
-          {/* <div className="mt-5 text-sm text-center text-gray-700 dark:text-gray-400">
+          <div className="mt-5 text-sm text-center text-gray-700 dark:text-gray-400">
             Don&apos;t have an account?{" "}
             <Link to="/signup" className="text-brand-500">
               Sign Up
             </Link>
-          </div> */}
+          </div>
         </div>
       </div>
     </div>

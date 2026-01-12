@@ -15,6 +15,7 @@ export type RegisterForm = {
 export type RegisterResponse = {
     access_token:string,
     refresh_token:string,
+    message?: string,
     user:{
      id: number;
      email: string;
@@ -34,7 +35,8 @@ export function useRegister(){
         },
         onSuccess: (data)=>{
             console.log("Register successfully",data);
-            navigate("/signin")
+            // Navigate to success page instead of signin
+            navigate("/registration-success")
         },
          onError: (error) => {
             if (axios.isAxiosError(error)) {
