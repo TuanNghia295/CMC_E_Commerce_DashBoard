@@ -130,6 +130,7 @@ export default function SignUpForm() {
                       placeholder="Enter your first name"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
+                      required
                     />
                   </div>
                   {/* <!-- Last Name --> */}
@@ -144,6 +145,7 @@ export default function SignUpForm() {
                       placeholder="Enter your last name"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
+                      required
                     />
                   </div>
                 </div>

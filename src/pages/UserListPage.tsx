@@ -18,7 +18,7 @@ export default function UserListPage() {
             User List
           </h2>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Manage all users in your e-commerce platform
+            Manage all users
           </p>
         </div>
 
