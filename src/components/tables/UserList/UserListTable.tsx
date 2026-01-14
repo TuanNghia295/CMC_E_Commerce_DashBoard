@@ -14,6 +14,7 @@ import { useUsers } from "../../../hooks/useUsers";
 import { useCreateUser } from "../../../hooks/useCreateUser";
 import { useUpdateUser } from "../../../hooks/useUpdateUser";
 import { useDeleteUser } from "../../../hooks/useDeleteUser";
+import Avatar from "../../ui/avatar/Avatar";
 
 export default function UserListTable() {
   // Pagination and filter states
@@ -266,6 +267,9 @@ export default function UserListTable() {
                       <TableCell className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
                         ID
                       </TableCell>
+                      <TableCell className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Avatar
+                      </TableCell>
                       <TableCell
                         className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
                         onClick={() => handleSort("full_name")}
@@ -306,7 +310,7 @@ export default function UserListTable() {
                   <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                     {users.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={7} className="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
+                        <TableCell colSpan={8} className="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
                           No users found
                         </TableCell>
                       </TableRow>
@@ -315,6 +319,17 @@ export default function UserListTable() {
                         <TableRow key={user.id}>
                           <TableCell className="px-5 py-3 text-sm text-gray-900 dark:text-gray-100">
                             {user.id}
+                          </TableCell>
+                          <TableCell className="px-5 py-3">
+                            {user.avatar_url ? (
+                              <Avatar src={user.avatar_url} size="small" alt={user.full_name} />
+                            ) : (
+                              <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                  {user.full_name.charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                            )}
                           </TableCell>
                           <TableCell className="px-5 py-3 text-sm text-gray-900 dark:text-gray-100">
                             {user.full_name}

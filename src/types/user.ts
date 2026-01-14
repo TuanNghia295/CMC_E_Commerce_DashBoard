@@ -7,6 +7,7 @@ export interface User {
   created_at: string;
   updated_at: string;
   deleted_at?: string | null;
+  avatar_url?: string | null;
 }
 
 export interface UserListResponse {
@@ -36,6 +37,7 @@ export interface UserCreateInput {
   role: "user" | "admin";
   password: string;
   password_confirmation: string;
+  avatar?: string;
 }
 
 export interface UserUpdateInput {
@@ -45,4 +47,5 @@ export interface UserUpdateInput {
   role?: "user" | "admin";
   password?: string;
   password_confirmation?: string;
+  avatar?: string;
 }

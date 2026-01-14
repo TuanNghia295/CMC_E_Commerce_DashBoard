@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import type { User, UserCreateInput, UserUpdateInput } from "../../types/user";
+import AvatarUpload from "../form/input/AvatarUpload";
 
 interface UserFormModalProps {
   isOpen: boolean;
@@ -24,9 +25,11 @@ export default function UserFormModal({
     role: "user" as "user" | "admin",
     password: "",
     password_confirmation: "",
+    avatar: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   useEffect(() => {
     if (mode === "edit" && user) {
@@ -37,6 +40,7 @@ export default function UserFormModal({
         role: user.role,
         password: "",
         password_confirmation: "",
+        avatar: "",
       });
     } else {
       setFormData({
@@ -46,9 +50,11 @@ export default function UserFormModal({
         role: "user",
         password: "",
         password_confirmation: "",
+        avatar: "",
       });
     }
     setError(null);
+    setUploadError(null);
   }, [user, mode, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,6 +81,7 @@ export default function UserFormModal({
               full_name: formData.full_name,
               phone: formData.phone || undefined,
               role: formData.role,
+              ...(formData.avatar && { avatar: formData.avatar }),
               ...(formData.password && {
                 password: formData.password,
                 password_confirmation: formData.password_confirmation,
@@ -105,7 +112,27 @@ export default function UserFormModal({
           </div>
         )}
 
+        {uploadError && (
+          <div className="mb-4 p-3 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-lg text-sm">
+            {uploadError}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Avatar Upload */}
+          <div className="flex justify-center py-4 border-b border-gray-200 dark:border-gray-700">
+            <AvatarUpload
+              currentAvatarUrl={user?.avatar_url}
+              onUploadComplete={(blobSignedId) => {
+                setFormData({ ...formData, avatar: blobSignedId });
+                setUploadError(null);
+              }}
+              onUploadError={(error) => setUploadError(error)}
+              size="xxlarge"
+              disabled={isSubmitting}
+            />
+          </div>
+
           <div>
             <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
               Full Name *
