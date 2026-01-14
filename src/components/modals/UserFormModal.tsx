@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import type { User, UserCreateInput, UserUpdateInput } from "../../types/user";
 import AvatarUpload from "../form/input/AvatarUpload";
+import { getAvatarUrl } from "../../utils/urlHelpers";
 
 interface UserFormModalProps {
   isOpen: boolean;
@@ -122,7 +123,7 @@ export default function UserFormModal({
           {/* Avatar Upload */}
           <div className="flex justify-center py-4 border-b border-gray-200 dark:border-gray-700">
             <AvatarUpload
-              currentAvatarUrl={user?.avatar_url}
+              currentAvatarUrl={getAvatarUrl(user?.avatar_url)}
               onUploadComplete={(blobSignedId) => {
                 setFormData({ ...formData, avatar: blobSignedId });
                 setUploadError(null);

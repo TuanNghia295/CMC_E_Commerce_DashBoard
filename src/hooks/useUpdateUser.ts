@@ -7,9 +7,12 @@ export function useUpdateUser() {
 
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: UserUpdateInput }): Promise<User> => {
+      console.log("Updating user with data:", { id, data });
       return userApi.updateUser(id, data);
     },
-    onSuccess: () => {
+    onSuccess: (updatedUser) => {
+      console.log("User updated successfully:", updatedUser);
+      console.log("Avatar URL from backend:", updatedUser.avatar_url);
       // Invalidate and refetch users list
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },

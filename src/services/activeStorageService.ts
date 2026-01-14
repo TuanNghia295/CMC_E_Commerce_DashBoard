@@ -54,7 +54,7 @@ export const calculateChecksum = (file: File): Promise<string> => {
  */
 export const activeStorageService = {
   /**
-   * Step 1: Request presigned URL from Rails backend
+   * Step 1: Request presigned URL from Rails backend ( quyền upload trực tiếp lên S3 từ BackEnd)
    */
   requestDirectUpload: async (
     blobParams: BlobParams

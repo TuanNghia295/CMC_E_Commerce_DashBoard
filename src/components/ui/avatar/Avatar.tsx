@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 interface AvatarProps {
   src: string; // URL of the avatar image
   alt?: string; // Alt text for the avatar
@@ -35,10 +37,30 @@ const Avatar: React.FC<AvatarProps> = ({
   size = "medium",
   status = "none",
 }) => {
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = () => {
+    console.error("Failed to load avatar image:", src);
+    setImageError(true);
+  };
+
   return (
     <div className={`relative  rounded-full ${sizeClasses[size]}`}>
       {/* Avatar Image */}
-      <img src={src} alt={alt} className="object-cover rounded-full" />
+      {imageError ? (
+        <div className="h-full w-full rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {alt?.charAt(0).toUpperCase() || "?"}
+          </span>
+        </div>
+      ) : (
+        <img
+          src={src}
+          alt={alt}
+          className="object-cover rounded-full w-full h-full"
+          onError={handleImageError}
+        />
+      )}
 
       {/* Status Indicator */}
       {status !== "none" && (

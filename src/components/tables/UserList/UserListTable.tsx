@@ -15,6 +15,7 @@ import { useCreateUser } from "../../../hooks/useCreateUser";
 import { useUpdateUser } from "../../../hooks/useUpdateUser";
 import { useDeleteUser } from "../../../hooks/useDeleteUser";
 import Avatar from "../../ui/avatar/Avatar";
+import { getAvatarUrl } from "../../../utils/urlHelpers";
 
 export default function UserListTable() {
   // Pagination and filter states
@@ -49,6 +50,13 @@ export default function UserListTable() {
   const deleteUserMutation = useDeleteUser();
 
   const users = data?.data || [];
+  console.log("USER", users);
+
+  // Debug: Log avatar URLs
+  if (users.length > 0) {
+    console.log("Avatar URLs:", users.map(u => ({ id: u.id, avatar_url: u.avatar_url })));
+  }
+  
   const totalPages = data?.meta.total_pages || 1;
   const totalCount = data?.meta.total_count || 0;
 
@@ -301,6 +309,9 @@ export default function UserListTable() {
                       <TableCell className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
                         Created At
                       </TableCell>
+                       <TableCell className="px-5 py-4 text-center text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Verified
+                      </TableCell>
                       <TableCell className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
                         Actions
                       </TableCell>
@@ -322,7 +333,7 @@ export default function UserListTable() {
                           </TableCell>
                           <TableCell className="px-5 py-3">
                             {user.avatar_url ? (
-                              <Avatar src={user.avatar_url} size="small" alt={user.full_name} />
+                              <Avatar src={getAvatarUrl(user.avatar_url) || user.avatar_url} size="small" alt={user.full_name} />
                             ) : (
                               <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
                                 <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -353,6 +364,9 @@ export default function UserListTable() {
                           </TableCell>
                           <TableCell className="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
                             {formatDate(user.created_at)}
+                          </TableCell>
+                          <TableCell className="px-5 py-3 text-sm text-gray-600 dark:text-gray-400 text-center">
+                            {user.verified ? "Yes" : "No"}
                           </TableCell>
                           <TableCell className="px-5 py-3 text-sm">
                             <div className="flex gap-2">

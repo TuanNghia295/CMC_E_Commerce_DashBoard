@@ -8,6 +8,7 @@ export interface User {
   updated_at: string;
   deleted_at?: string | null;
   avatar_url?: string | null;
+  verified: boolean
 }
 
 export interface UserListResponse {

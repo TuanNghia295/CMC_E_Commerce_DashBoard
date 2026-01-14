@@ -26,7 +26,9 @@ export const userApi = {
   },
 
   updateUser: async (id: number, data: UserUpdateInput): Promise<User> => {
-    return AxiosClient.put<User>(`/admin/users/${id}`, data);
+    return AxiosClient.put<User>(`/admin/users/${id}`, {
+      user: data
+    });
   },
 
   deleteUser: async (id: number): Promise<void> => {
