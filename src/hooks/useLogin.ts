@@ -1,5 +1,5 @@
 // src/hooks/useLogin.ts
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import AxiosClient from "../constants/axiosClient";
 import { useUserStore } from "../store/userStore";
 
@@ -19,6 +19,16 @@ export type LoginResponse = {
   };
 };
 
+export type UserInfoResponse = {
+  user: {
+    id: number;
+    email: string;
+    full_name: string;
+    phone: string;
+    avatar_url:string;
+  };
+};
+
 
 
 export function useLogin() {
@@ -33,11 +43,24 @@ export function useLogin() {
       return res;
     },
 
-   onSuccess: (data) => {
+   onSuccess: async (data) => {
       setTokens(data.access_token, data.refresh_token);
-      setUserInfo(data.user);
+      const res = await AxiosClient.get<UserInfoResponse>("users/userInfo")
+      setUserInfo (res.user)
     },
     onError: (e)=> console.log("error",e)
     
   });
+}
+
+export function useUserInfo(){
+  return useQuery({
+    queryKey:["userInfo"],
+    queryFn: async ():Promise<UserInfoResponse> =>{
+      const res = await AxiosClient.get<UserInfoResponse>(
+        "users/userInfo"
+      )
+      return res
+    }
+  })
 }
