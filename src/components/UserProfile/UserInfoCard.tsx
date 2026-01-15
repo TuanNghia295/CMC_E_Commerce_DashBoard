@@ -12,7 +12,7 @@ type UserInfoCardProps = {
   avatar: string;
 }
 
-export default function UserInfoCard({ fullName, email, phone, avatar }: UserInfoCardProps) {
+export default function UserInfoCard({ fullName, email, phone }: UserInfoCardProps) {
   const { isOpen, openModal, closeModal } = useModal();
   const handleSave = () => {
     // Handle save logic here

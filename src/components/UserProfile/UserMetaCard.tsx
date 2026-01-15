@@ -12,7 +12,7 @@ type UserMasteraCardProps = {
   avatar?: string;
 }
 
-export default function UserMetaCard({ fullName, email, phone, avatar }: UserMasteraCardProps) {
+export default function UserMetaCard({ fullName, email, avatar }: UserMasteraCardProps) {
   const { isOpen, openModal, closeModal } = useModal();
   const handleSave = () => {
     // Handle save logic here
