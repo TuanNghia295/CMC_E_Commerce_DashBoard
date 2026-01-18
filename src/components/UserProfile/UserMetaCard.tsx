@@ -24,8 +24,8 @@ export default function UserMetaCard({ fullName, email, avatar }: UserMasteraCar
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-col items-center w-full gap-6 xl:flex-row">
-            <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
-              <img src={avatar} alt="user" />
+            <div className="w-20 h-20 text-center overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
+              <h5 className="p-4 mt-2">A</h5>
             </div>
             <div className="order-3 xl:order-2">
               <h4 className="mb-2 text-lg font-semibold text-center text-gray-800 dark:text-white/90 xl:text-left">
@@ -102,7 +102,7 @@ export default function UserMetaCard({ fullName, email, avatar }: UserMasteraCar
               </a>
             </div>
           </div>
-          <button
+          {/* <button
             onClick={openModal}
             className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
           >
@@ -122,7 +122,7 @@ export default function UserMetaCard({ fullName, email, avatar }: UserMasteraCar
               />
             </svg>
             Edit
-          </button>
+          </button> */}
         </div>
       </div>
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
@@ -145,7 +145,7 @@ export default function UserMetaCard({ fullName, email, avatar }: UserMasteraCar
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
                     <Label>First Name</Label>
-                    <Input type="text" value="Musharof" />
+                    <Input type="text" value="Admin" />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">

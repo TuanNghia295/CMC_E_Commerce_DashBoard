@@ -19,7 +19,7 @@ export default function UserProfiles() {
         </h3>
         <div className="space-y-6">
           <UserMetaCard fullName={userInfo.full_name} email={userInfo.email} phone={userInfo.phone}/>
-          <UserInfoCard fullName={userInfo.full_name} email={userInfo.email} phone={userInfo.phone} avatar={userInfo.avatar_url} />
+          <UserInfoCard user={userInfo}/>
         </div>
       </div>
     </>

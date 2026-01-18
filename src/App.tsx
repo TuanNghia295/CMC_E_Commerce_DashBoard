@@ -22,6 +22,8 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import PrivateRoute from "./PrivateRoute";
 import UserListPage from "./pages/UserListPage";
+import ProductListTable from "./components/tables/ProductList/ProductListTable";
+import CategoryListTable from "./components/tables/CategoryList/CategoryListTable";
 
 export default function App() {
   return (
@@ -36,6 +38,8 @@ export default function App() {
 
               {/* E-commerce Routes */}
               <Route path="/users" element={<UserListPage />} />
+              <Route path="/products" element={<ProductListTable/>}/>
+              <Route path="/categories" element={<CategoryListTable/>}/>
 
               {/* Others Page */}
               <Route path="/profile" element={<UserProfiles />} />
