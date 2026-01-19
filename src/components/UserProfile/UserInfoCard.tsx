@@ -16,7 +16,7 @@ type UserInfoCardProps = {
 export default function UserInfoCard({ user }: UserInfoCardProps) {
   console.log("user",user);
   
-  const { isOpen, openModal, closeModal } = useModal();
+  const { isOpen, closeModal } = useModal();
   const updateUserMutation = useUpdateUser();
 
   // Form state

@@ -481,9 +481,8 @@ export default function ProductListTable() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
-        title="Delete Product"
-        message={`Are you sure you want to delete "${selectedProduct?.name}"? This action cannot be undone.`}
         isDeleting={deleteProductMutation.isPending}
+        userName={selectedProduct?.name || ""}
       />
     </div>
   );

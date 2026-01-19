@@ -363,9 +363,8 @@ export default function CategoryListTable() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
-        title="Delete Category"
-        message={`Are you sure you want to delete "${selectedCategory?.name}"? This action cannot be undone.`}
         isDeleting={deleteCategoryMutation.isPending}
+        userName={selectedCategory?.name || ""}
       />
     </div>
   );
