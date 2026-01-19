@@ -39,6 +39,7 @@ export interface UserCreateInput {
   password: string;
   password_confirmation: string;
   avatar?: string;
+  verified?:boolean
 }
 
 export interface UserUpdateInput {
@@ -49,4 +50,5 @@ export interface UserUpdateInput {
   password?: string;
   password_confirmation?: string;
   avatar?: string;
+  verified?:boolean;
 }

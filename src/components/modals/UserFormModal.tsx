@@ -27,6 +27,7 @@ export default function UserFormModal({
     password: "",
     password_confirmation: "",
     avatar: "",
+    verified: false ,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +43,7 @@ export default function UserFormModal({
         password: "",
         password_confirmation: "",
         avatar: "",
+        verified: user.verified,
       });
     } else {
       setFormData({
@@ -52,6 +54,7 @@ export default function UserFormModal({
         password: "",
         password_confirmation: "",
         avatar: "",
+        verified: false,
       });
     }
     setError(null);
@@ -87,6 +90,7 @@ export default function UserFormModal({
                 password: formData.password,
                 password_confirmation: formData.password_confirmation,
               }),
+              verified: formData.verified,
             };
 
       await onSubmit(submitData);
@@ -176,14 +180,27 @@ export default function UserFormModal({
             <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
               Role *
             </label>
-            <select
-              required
+            <input
+              disabled={true}
+              required={mode === "create"}
               value={formData.role}
               onChange={(e) => setFormData({ ...formData, role: e.target.value as "user" | "admin" })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+              Verified *
+            </label>
+            <select
+              required={mode === "create"}
+              value={formData.verified === true ? "Yes" : "No"}
+              onChange={(e) => setFormData({ ...formData, verified: e.target.value === "Yes" })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white"
             >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
           </div>
 
