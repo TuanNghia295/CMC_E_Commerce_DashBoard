@@ -20,7 +20,7 @@ import { useDeleteBanner } from "../../../hooks/useDeleteBanner";
 import { useReorderBanners } from "../../../hooks/useReorderBanners";
 import BannerFormModal from "../../modals/BannerFormModal";
 import DeleteConfirmModal from "../../modals/DeleteConfirmModal";
-import { ExternalLink, ArrowUp, ArrowDown } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 export default function BannerListTable() {
   // Pagination states
@@ -161,29 +161,29 @@ export default function BannerListTable() {
   };
 
   // Reorder banners (move up/down)
-  const handleMoveUp = async (banner: Banner, index: number) => {
-    if (index === 0) return;
+  // const handleMoveUp = async (banner: Banner, index: number) => {
+  //   if (index === 0) return;
 
-    const previousBanner = banners[index - 1];
-    const reorderData = [
-      { id: banner.id, display_order: previousBanner.display_order },
-      { id: previousBanner.id, display_order: banner.display_order },
-    ];
+  //   const previousBanner = banners[index - 1];
+  //   const reorderData = [
+  //     { id: banner.id, display_order: previousBanner.display_order },
+  //     { id: previousBanner.id, display_order: banner.display_order },
+  //   ];
 
-    await reorderBannersMutation.mutateAsync(reorderData);
-  };
+  //   await reorderBannersMutation.mutateAsync(reorderData);
+  // };
 
-  const handleMoveDown = async (banner: Banner, index: number) => {
-    if (index === banners.length - 1) return;
+  // const handleMoveDown = async (banner: Banner, index: number) => {
+  //   if (index === banners.length - 1) return;
 
-    const nextBanner = banners[index + 1];
-    const reorderData = [
-      { id: banner.id, display_order: nextBanner.display_order },
-      { id: nextBanner.id, display_order: banner.display_order },
-    ];
+  //   const nextBanner = banners[index + 1];
+  //   const reorderData = [
+  //     { id: banner.id, display_order: nextBanner.display_order },
+  //     { id: nextBanner.id, display_order: banner.display_order },
+  //   ];
 
-    await reorderBannersMutation.mutateAsync(reorderData);
-  };
+  //   await reorderBannersMutation.mutateAsync(reorderData);
+  // };
 
   if (error) {
     return (
@@ -502,8 +502,8 @@ export default function BannerListTable() {
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
-        title="Delete Banner"
-        message={`Are you sure you want to delete "${selectedBanner?.title}"? This action cannot be undone.`}
+        userName={selectedBanner?.title}
+        isDeleting={deleteBannerMutation.isPending}
       />
     </div>
   );

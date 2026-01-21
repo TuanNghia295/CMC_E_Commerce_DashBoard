@@ -2,7 +2,7 @@ interface DeleteConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => Promise<void>;
-  userName: string;
+  userName?: string;
   isDeleting: boolean;
 }
 
