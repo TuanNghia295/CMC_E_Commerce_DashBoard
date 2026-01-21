@@ -60,12 +60,12 @@ const navItems: NavItem[] = [
   
   {
     icon: <PageIcon />,
-    name: "Banners Management",
+    name: "Banners",
     subItems: [
       // { name: "Campaigns", path: "/marketing/campaigns", pro: false },
       // { name: "Coupons & Discounts", path: "/marketing/coupons", pro: false },
       // { name: "Email Marketing", path: "/marketing/emails", pro: false },
-      { name: "Banners", path: "/banners", pro: false },
+      { name: "Banner List", path: "/banners", pro: false },
     ],
   },
   {
