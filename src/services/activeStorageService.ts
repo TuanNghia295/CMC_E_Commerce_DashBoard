@@ -68,12 +68,13 @@ export const activeStorageService = {
   },
 
   /**
-   * Step 2: Upload file directly to S3
+   * Step 2: Upload file directly to S3 with retry logic
    */
   uploadToS3: async (
     file: File,
     url: string,
-    headers: Record<string, string>
+    headers: Record<string, string>,
+    maxRetries = 3
   ): Promise<void> => {
     console.log("Uploading to S3:", { url, headers, fileSize: file.size });
 
@@ -92,21 +93,57 @@ export const activeStorageService = {
 
     console.log("Clean headers for S3:", cleanHeaders);
 
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: cleanHeaders,
-      body: file,
-    });
+    let lastError: Error | null = null;
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("S3 upload error:", {
-        status: response.status,
-        statusText: response.statusText,
-        errorText,
-      });
-      throw new Error(`S3 upload failed: ${response.statusText}`);
+    // Retry logic
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`Upload attempt ${attempt}/${maxRetries}`);
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutes timeout
+
+        const response = await fetch(url, {
+          method: "PUT",
+          headers: cleanHeaders,
+          body: file,
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("S3 upload error:", {
+            status: response.status,
+            statusText: response.statusText,
+            errorText,
+          });
+          throw new Error(`S3 upload failed: ${response.statusText}`);
+        }
+
+        console.log("✓ Upload successful!");
+        return; // Success!
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+        console.error(`Upload attempt ${attempt} failed:`, lastError.message);
+
+        // Don't retry on abort (timeout)
+        if (lastError.name === 'AbortError') {
+          throw new Error('Upload timeout. Please check your internet connection and try again.');
+        }
+
+        // Wait before retrying (exponential backoff)
+        if (attempt < maxRetries) {
+          const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
+          console.log(`Retrying in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
     }
+
+    // All retries failed
+    throw new Error(`Upload failed after ${maxRetries} attempts: ${lastError?.message}`);
   },
 
   /**

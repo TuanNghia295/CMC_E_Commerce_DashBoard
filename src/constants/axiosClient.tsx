@@ -17,7 +17,7 @@ interface TypedAxiosInstance extends AxiosInstance {
 
 const AxiosClient: TypedAxiosInstance = axios.create({
   baseURL: END_POINTS,
-  timeout: 10000,
+  timeout: 30000, // Increased to 30 seconds for file upload operations
 }) as TypedAxiosInstance;
 
 // 🟡 Request Interceptor
