@@ -17,7 +17,6 @@ import { useBanners } from "../../../hooks/useBanners";
 import { useCreateBanner } from "../../../hooks/useCreateBanner";
 import { useUpdateBanner } from "../../../hooks/useUpdateBanner";
 import { useDeleteBanner } from "../../../hooks/useDeleteBanner";
-import { useReorderBanners } from "../../../hooks/useReorderBanners";
 import BannerFormModal from "../../modals/BannerFormModal";
 import DeleteConfirmModal from "../../modals/DeleteConfirmModal";
 import { ExternalLink } from "lucide-react";
@@ -52,7 +51,6 @@ export default function BannerListTable() {
   const createBannerMutation = useCreateBanner();
   const updateBannerMutation = useUpdateBanner();
   const deleteBannerMutation = useDeleteBanner();
-  const reorderBannersMutation = useReorderBanners();
 
   const banners = data?.data || [];
   const totalPages = data?.meta.total_pages || 1;
@@ -348,7 +346,7 @@ export default function BannerListTable() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  banners.map((banner, index) => (
+                  banners.map((banner) => (
                     <TableRow key={banner.id}>
                       <TableCell className="px-5 py-3 text-sm text-gray-900 dark:text-gray-100">
                         {banner.id}
