@@ -24,6 +24,7 @@ import PrivateRoute from "./PrivateRoute";
 import UserListPage from "./pages/UserListPage";
 import ProductListTable from "./components/tables/ProductList/ProductListTable";
 import CategoryListTable from "./components/tables/CategoryList/CategoryListTable";
+import BannerListPage from "./pages/BannerListPage";
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
               <Route path="/users" element={<UserListPage />} />
               <Route path="/products" element={<ProductListTable/>}/>
               <Route path="/categories" element={<CategoryListTable/>}/>
+              <Route path="/banners" element={<BannerListPage/>}/>
 
               {/* Others Page */}
               <Route path="/profile" element={<UserProfiles />} />

@@ -66,7 +66,7 @@ export default function VerifyEmail() {
             </p>
             <Link
               to="/signin"
-              className="inline-block px-6 py-3 mt-6 text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700"
+              className="inline-block px-6 py-3 mt-6 text-white transition-colors bg-neutral-600 rounded-lg hover:bg-neutral-700"
             >
               Go to Sign In
             </Link>
@@ -87,7 +87,7 @@ export default function VerifyEmail() {
             <div className="mt-6 space-y-3">
               <Link
                 to="/signup"
-                className="block px-6 py-3 text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700"
+                className="block px-6 py-3 text-white transition-colors bg-neutral-600 rounded-lg hover:bg-neutral-700"
               >
                 Register Again
               </Link>
@@ -113,7 +113,7 @@ export default function VerifyEmail() {
             </p>
             <Link
               to="/signin"
-              className="inline-block px-6 py-3 mt-6 text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700"
+              className="inline-block px-6 py-3 mt-6 text-white transition-colors bg-neutral-600 rounded-lg hover:bg-neutral-700"
             >
               Back to Sign In
             </Link>

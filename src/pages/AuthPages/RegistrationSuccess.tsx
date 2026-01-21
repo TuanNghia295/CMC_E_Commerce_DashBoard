@@ -17,7 +17,7 @@ export default function RegistrationSuccess() {
             Please check your email and click the verification link to activate your account.
           </p>
 
-          <div className="p-4 mt-6 border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20">
+          <div className="p-4 mt-6 border-l-4 border-blue-500 bg-neutral-50 dark:bg-neutral-900/20">
             <p className="text-sm text-blue-800 dark:text-blue-200">
               <strong>Note:</strong> If you don't see the email, please check your spam folder.
             </p>

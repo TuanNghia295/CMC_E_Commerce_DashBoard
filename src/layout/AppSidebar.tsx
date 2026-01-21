@@ -11,8 +11,8 @@ import {
   ShootingStarIcon,
   TaskIcon,
   UserCircleIcon,
-  DollarLineIcon,
   PieChartIcon,
+  PageIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
@@ -59,13 +59,13 @@ const navItems: NavItem[] = [
   },
   
   {
-    icon: <DollarLineIcon />,
-    name: "Marketing",
+    icon: <PageIcon />,
+    name: "Banners Management",
     subItems: [
-      { name: "Campaigns", path: "/marketing/campaigns", pro: false },
-      { name: "Coupons & Discounts", path: "/marketing/coupons", pro: false },
-      { name: "Email Marketing", path: "/marketing/emails", pro: false },
-      { name: "Banners", path: "/marketing/banners", pro: false },
+      // { name: "Campaigns", path: "/marketing/campaigns", pro: false },
+      // { name: "Coupons & Discounts", path: "/marketing/coupons", pro: false },
+      // { name: "Email Marketing", path: "/marketing/emails", pro: false },
+      { name: "Banners", path: "/banners", pro: false },
     ],
   },
   {
