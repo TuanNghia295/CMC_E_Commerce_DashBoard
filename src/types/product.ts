@@ -1,3 +1,11 @@
+export interface ProductVariant {
+  id: number;
+  size: string;
+  color: string;
+  sku: string;
+  quantity: number;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -6,6 +14,7 @@ export interface Product {
   category_id: number;
   images: string[];
   image_thumbnails: string[];
+  variants: ProductVariant[];
   created_at: string;
 }
 
@@ -36,6 +45,12 @@ export interface ProductCreateInput {
   price: number;
   category_id: number;
   image_signed_ids?: string[];
+  variants?: {
+    size: string;
+    color: string;
+    sku: string;
+    quantity: number;
+  }[];
 }
 
 export interface ProductUpdateInput {

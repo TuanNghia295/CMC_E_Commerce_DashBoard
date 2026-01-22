@@ -25,7 +25,7 @@ export default function BannerFormModal({
   const [formData, setFormData] = useState({
     title: "",
     link_url: "",
-    display_order: 0,
+    display_order: undefined as number | undefined,
     status: "active" as "active" | "inactive",
     image_signed_id: "",
   });
@@ -46,7 +46,7 @@ export default function BannerFormModal({
       setFormData({
         title: "",
         link_url: "",
-        display_order: 0,
+        display_order: undefined,
         status: "active",
         image_signed_id: "",
       });
@@ -70,8 +70,10 @@ export default function BannerFormModal({
       const submitData: BannerCreateInput | BannerUpdateInput = {
         title: formData.title.trim(),
         link_url: formData.link_url.trim() || undefined,
-        display_order: formData.display_order,
         status: formData.status,
+        ...(mode === "edit" && formData.display_order !== undefined && {
+          display_order: formData.display_order,
+        }),
         ...(formData.image_signed_id && {
           image_signed_id: formData.image_signed_id,
         }),
@@ -161,28 +163,30 @@ export default function BannerFormModal({
           </div>
 
           {/* Display Order and Status - Side by Side */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* Display Order */}
-            <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
-                Display Order
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={formData.display_order}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    display_order: parseInt(e.target.value) || 0,
-                  })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white"
-              />
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Lower numbers appear first
-              </p>
-            </div>
+          <div className={`grid ${mode === "edit" ? "grid-cols-2" : "grid-cols-1"} gap-4`}>
+            {/* Display Order - Only show in edit mode */}
+            {mode === "edit" && (
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Display Order
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={formData.display_order ?? 0}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      display_order: parseInt(e.target.value) || 0,
+                    })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                />
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Lower numbers appear first. Use reorder buttons for easier management.
+                </p>
+              </div>
+            )}
 
             {/* Status */}
             <div>

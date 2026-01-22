@@ -25,6 +25,7 @@ export default function ProductFormModal({
     price: "",
     category_id: "",
     image_signed_ids: [] as string[],
+    variants: [] as { size: string; color: string; sku: string; quantity: string }[],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +43,12 @@ export default function ProductFormModal({
         price: product.price.toString(),
         category_id: product.category_id.toString(),
         image_signed_ids: [],
+        variants: product.variants?.map(v => ({
+          size: v.size,
+          color: v.color,
+          sku: v.sku,
+          quantity: v.quantity.toString()
+        })) || [],
       });
     } else {
       setFormData({
@@ -50,6 +57,7 @@ export default function ProductFormModal({
         price: "",
         category_id: "",
         image_signed_ids: [],
+        variants: [],
       });
     }
     setError(null);
@@ -85,6 +93,14 @@ export default function ProductFormModal({
         category_id: parseInt(formData.category_id),
         ...(formData.image_signed_ids.length > 0 && {
           image_signed_ids: formData.image_signed_ids,
+        }),
+        ...(formData.variants.length > 0 && {
+          variants: formData.variants.map(v => ({
+            size: v.size,
+            color: v.color,
+            sku: v.sku,
+            quantity: parseInt(v.quantity) || 0
+          }))
         }),
       };
 
@@ -203,6 +219,124 @@ export default function ProductFormModal({
                 ))}
               </select>
             </div>
+          </div>
+
+          {/* Variants Section */}
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+            <div className="flex justify-between items-center mb-3">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Product Variants
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  setFormData({
+                    ...formData,
+                    variants: [...formData.variants, { size: "", color: "", sku: "", quantity: "0" }]
+                  });
+                }}
+                className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 border border-blue-600 dark:border-blue-400 rounded hover:bg-blue-50 dark:hover:bg-blue-900/20"
+              >
+                + Add Variant
+              </button>
+            </div>
+
+            {formData.variants.map((variant, index) => (
+              <div key={index} className="mb-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Variant {index + 1}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newVariants = formData.variants.filter((_, i) => i !== index);
+                      setFormData({ ...formData, variants: newVariants });
+                    }}
+                    className="text-xs text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                  >
+                    Remove
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block mb-1 text-xs text-gray-600 dark:text-gray-400">
+                      Size
+                    </label>
+                    <input
+                      type="text"
+                      value={variant.size}
+                      onChange={(e) => {
+                        const newVariants = [...formData.variants];
+                        newVariants[index].size = e.target.value;
+                        setFormData({ ...formData, variants: newVariants });
+                      }}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                      placeholder="e.g. M, L, XL"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block mb-1 text-xs text-gray-600 dark:text-gray-400">
+                      Color
+                    </label>
+                    <input
+                      type="text"
+                      value={variant.color}
+                      onChange={(e) => {
+                        const newVariants = [...formData.variants];
+                        newVariants[index].color = e.target.value;
+                        setFormData({ ...formData, variants: newVariants });
+                      }}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                      placeholder="e.g. Red, Blue"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block mb-1 text-xs text-gray-600 dark:text-gray-400">
+                      SKU
+                    </label>
+                    <input
+                      type="text"
+                      value={variant.sku}
+                      onChange={(e) => {
+                        const newVariants = [...formData.variants];
+                        newVariants[index].sku = e.target.value;
+                        setFormData({ ...formData, variants: newVariants });
+                      }}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                      placeholder="e.g. PROD-M-RED"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block mb-1 text-xs text-gray-600 dark:text-gray-400">
+                      Quantity
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={variant.quantity}
+                      onChange={(e) => {
+                        const newVariants = [...formData.variants];
+                        newVariants[index].quantity = e.target.value;
+                        setFormData({ ...formData, variants: newVariants });
+                      }}
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {formData.variants.length === 0 && (
+              <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                No variants added. Click "Add Variant" to create product variants.
+              </p>
+            )}
           </div>
 
           {/* Form Actions */}

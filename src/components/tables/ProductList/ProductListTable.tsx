@@ -44,6 +44,8 @@ export default function ProductListTable() {
 
   // React Query hooks
   const { data, isLoading, error } = useProducts(queryParams);
+  console.log(data);
+  
   const createProductMutation = useCreateProduct();
   const updateProductMutation = useUpdateProduct();
   const deleteProductMutation = useDeleteProduct();
@@ -343,6 +345,9 @@ export default function ProductListTable() {
                       )}
                     </div>
                   </TableCell>
+                  <TableCell className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Variants
+                  </TableCell>
                   <TableCell
                     className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
                     onClick={() => handleSort("created_at")}
@@ -363,7 +368,7 @@ export default function ProductListTable() {
               <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                 {products.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
+                    <TableCell colSpan={8} className="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
                       No products found
                     </TableCell>
                   </TableRow>
@@ -395,6 +400,26 @@ export default function ProductListTable() {
                       </TableCell>
                       <TableCell className="px-5 py-3 text-sm text-gray-900 dark:text-gray-100 font-semibold">
                         {formatPrice(product.price)}
+                      </TableCell>
+                      <TableCell className="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
+                        {product.variants && product.variants.length > 0 ? (
+                          <div className="space-y-1">
+                            {product.variants.slice(0, 2).map((variant, idx) => (
+                              <div key={idx} className="text-xs">
+                                <span className="font-medium">{variant.size}</span>
+                                {variant.color && <span> · {variant.color}</span>}
+                                <span className="text-gray-500 dark:text-gray-500"> (Qty: {variant.quantity})</span>
+                              </div>
+                            ))}
+                            {product.variants.length > 2 && (
+                              <div className="text-xs text-blue-600 dark:text-blue-400">
+                                +{product.variants.length - 2} more
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-xs italic text-gray-400">No variants</span>
+                        )}
                       </TableCell>
                       <TableCell className="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
                         {formatDate(product.created_at)}

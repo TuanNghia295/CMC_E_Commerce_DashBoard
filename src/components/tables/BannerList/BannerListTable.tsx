@@ -17,9 +17,10 @@ import { useBanners } from "../../../hooks/useBanners";
 import { useCreateBanner } from "../../../hooks/useCreateBanner";
 import { useUpdateBanner } from "../../../hooks/useUpdateBanner";
 import { useDeleteBanner } from "../../../hooks/useDeleteBanner";
+import { useReorderBanners } from "../../../hooks/useReorderBanners";
 import BannerFormModal from "../../modals/BannerFormModal";
 import DeleteConfirmModal from "../../modals/DeleteConfirmModal";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, ArrowUp, ArrowDown } from "lucide-react";
 
 export default function BannerListTable() {
   // Pagination states
@@ -51,6 +52,7 @@ export default function BannerListTable() {
   const createBannerMutation = useCreateBanner();
   const updateBannerMutation = useUpdateBanner();
   const deleteBannerMutation = useDeleteBanner();
+  const reorderBannersMutation = useReorderBanners();
 
   const banners = data?.data || [];
   const totalPages = data?.meta.total_pages || 1;
@@ -159,29 +161,29 @@ export default function BannerListTable() {
   };
 
   // Reorder banners (move up/down)
-  // const handleMoveUp = async (banner: Banner, index: number) => {
-  //   if (index === 0) return;
+  const handleMoveUp = async (banner: Banner, index: number) => {
+    if (index === 0) return;
 
-  //   const previousBanner = banners[index - 1];
-  //   const reorderData = [
-  //     { id: banner.id, display_order: previousBanner.display_order },
-  //     { id: previousBanner.id, display_order: banner.display_order },
-  //   ];
+    const previousBanner = banners[index - 1];
+    const reorderData = [
+      { id: banner.id, display_order: previousBanner.display_order },
+      { id: previousBanner.id, display_order: banner.display_order },
+    ];
 
-  //   await reorderBannersMutation.mutateAsync(reorderData);
-  // };
+    await reorderBannersMutation.mutateAsync(reorderData);
+  };
 
-  // const handleMoveDown = async (banner: Banner, index: number) => {
-  //   if (index === banners.length - 1) return;
+  const handleMoveDown = async (banner: Banner, index: number) => {
+    if (index === banners.length - 1) return;
 
-  //   const nextBanner = banners[index + 1];
-  //   const reorderData = [
-  //     { id: banner.id, display_order: nextBanner.display_order },
-  //     { id: nextBanner.id, display_order: banner.display_order },
-  //   ];
+    const nextBanner = banners[index + 1];
+    const reorderData = [
+      { id: banner.id, display_order: nextBanner.display_order },
+      { id: nextBanner.id, display_order: banner.display_order },
+    ];
 
-  //   await reorderBannersMutation.mutateAsync(reorderData);
-  // };
+    await reorderBannersMutation.mutateAsync(reorderData);
+  };
 
   if (error) {
     return (
@@ -287,9 +289,9 @@ export default function BannerListTable() {
                   <TableCell className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
                     ID
                   </TableCell>
-                  {/* <TableCell className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <TableCell className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
                     Order
-                  </TableCell> */}
+                  </TableCell>
                   <TableCell className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
                     Preview
                   </TableCell>
@@ -341,17 +343,17 @@ export default function BannerListTable() {
               <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                 {banners.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={9} className="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
+                    <TableCell colSpan={10} className="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
                       No banners found
                     </TableCell>
                   </TableRow>
                 ) : (
-                  banners.map((banner) => (
+                  banners.map((banner, index) => (
                     <TableRow key={banner.id}>
                       <TableCell className="px-5 py-3 text-sm text-gray-900 dark:text-gray-100">
                         {banner.id}
                       </TableCell>
-                      {/* <TableCell className="px-5 py-3">
+                      <TableCell className="px-5 py-3">
                         <div className="flex gap-1">
                           <button
                             onClick={() => handleMoveUp(banner, index)}
@@ -370,7 +372,7 @@ export default function BannerListTable() {
                             <ArrowDown className="h-4 w-4" />
                           </button>
                         </div>
-                      </TableCell> */}
+                      </TableCell>
                       <TableCell className="px-5 py-3">
                         {banner.image ? (
                           <img
