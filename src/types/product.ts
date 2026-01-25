@@ -14,6 +14,7 @@ export interface Product {
   category_id: number;
   images: string[];
   image_thumbnails: string[];
+  images_signed_ids: string[]
   variants: ProductVariant[];
   created_at: string;
 }
