@@ -1,10 +1,15 @@
-import { FC, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { activeStorageService } from "../../../services/activeStorageService";
 import { Upload, X, Image as ImageIcon } from "lucide-react";
 
 interface ImageUploadProps {
   currentImages?: string[];
+  existingImageSignedIds?: string[];
   onUploadComplete?: (blobSignedIds: string[]) => void;
+  onSyncComplete?: (data: {
+    existingImageSignedIds: string[];
+    imageSignedIds: string[];
+  }) => void;
   onUploadError?: (error: string) => void;
   className?: string;
   disabled?: boolean;
@@ -13,7 +18,9 @@ interface ImageUploadProps {
 
 const ImageUpload: FC<ImageUploadProps> = ({
   currentImages = [],
+  existingImageSignedIds = [],
   onUploadComplete,
+  onSyncComplete,
   onUploadError,
   className = "",
   disabled = false,
@@ -21,6 +28,15 @@ const ImageUpload: FC<ImageUploadProps> = ({
 }) => {
   const [previewUrls, setPreviewUrls] = useState<string[]>(currentImages);
   const [blobSignedIds, setBlobSignedIds] = useState<string[]>([]);
+  const [existingSignedIds, setExistingSignedIds] = useState<string[]>(existingImageSignedIds);
+
+  useEffect(() => {
+    setPreviewUrls(currentImages);
+  }, [currentImages]);
+
+  useEffect(() => {
+    setExistingSignedIds(existingImageSignedIds);
+  }, [existingImageSignedIds]);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -74,6 +90,10 @@ const ImageUpload: FC<ImageUploadProps> = ({
 
       // Notify parent component
       onUploadComplete?.(allBlobIds);
+      onSyncComplete?.({
+        existingImageSignedIds: existingSignedIds,
+        imageSignedIds: allBlobIds,
+      });
     } catch (error) {
       console.error("Upload failed:", error);
       onUploadError?.(
@@ -91,11 +111,26 @@ const ImageUpload: FC<ImageUploadProps> = ({
 
   const handleRemoveImage = (index: number) => {
     const newPreviews = previewUrls.filter((_, i) => i !== index);
-    const newBlobIds = blobSignedIds.filter((_, i) => i !== index);
+    const existingCount = existingSignedIds.length;
+
+    let newExistingSignedIds = existingSignedIds;
+    let newBlobIds = blobSignedIds;
+
+    if (index < existingCount) {
+      newExistingSignedIds = existingSignedIds.filter((_, i) => i !== index);
+      setExistingSignedIds(newExistingSignedIds);
+    } else {
+      const newIndex = index - existingCount;
+      newBlobIds = blobSignedIds.filter((_, i) => i !== newIndex);
+      setBlobSignedIds(newBlobIds);
+    }
 
     setPreviewUrls(newPreviews);
-    setBlobSignedIds(newBlobIds);
     onUploadComplete?.(newBlobIds);
+    onSyncComplete?.({
+      existingImageSignedIds: newExistingSignedIds,
+      imageSignedIds: newBlobIds,
+    });
   };
 
   const handleClickUpload = () => {

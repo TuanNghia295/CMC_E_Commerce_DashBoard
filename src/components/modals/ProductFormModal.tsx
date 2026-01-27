@@ -25,6 +25,7 @@ export default function ProductFormModal({
     price: "",
     category_id: "",
     image_signed_ids: [] as string[],
+    existing_image_signed_ids: [] as string[],
     variants: [] as { size: string; color: string; sku: string; quantity: string }[],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,6 +44,7 @@ export default function ProductFormModal({
         price: product.price.toString(),
         category_id: product.category_id.toString(),
         image_signed_ids: [],
+        existing_image_signed_ids: product.images_signed_ids || [],
         variants: product.variants?.map(v => ({
           size: v.size,
           color: v.color,
@@ -57,6 +59,7 @@ export default function ProductFormModal({
         price: "",
         category_id: "",
         image_signed_ids: [],
+        existing_image_signed_ids: [],
         variants: [],
       });
     }
@@ -93,6 +96,9 @@ export default function ProductFormModal({
         category_id: parseInt(formData.category_id),
         ...(formData.image_signed_ids.length > 0 && {
           image_signed_ids: formData.image_signed_ids,
+        }),
+        ...(mode === "edit" && {
+          existing_image_signed_ids: formData.existing_image_signed_ids,
         }),
         ...(formData.variants.length > 0 && {
           variants: formData.variants.map(v => ({
@@ -142,8 +148,17 @@ export default function ProductFormModal({
             </label>
             <ImageUpload
               currentImages={product?.images || []}
+              existingImageSignedIds={formData.existing_image_signed_ids}
               onUploadComplete={(blobSignedIds) => {
                 setFormData({ ...formData, image_signed_ids: blobSignedIds });
+                setUploadError(null);
+              }}
+              onSyncComplete={({ existingImageSignedIds, imageSignedIds }) => {
+                setFormData({
+                  ...formData,
+                  existing_image_signed_ids: existingImageSignedIds,
+                  image_signed_ids: imageSignedIds,
+                });
                 setUploadError(null);
               }}
               onUploadError={(error) => setUploadError(error)}
