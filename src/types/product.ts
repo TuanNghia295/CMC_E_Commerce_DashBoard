@@ -40,18 +40,21 @@ export interface ProductListResponse {
   };
 }
 
+export interface ProductVariantInput {
+  id?: number;
+  size: string;
+  color: string;
+  sku: string;
+  quantity: number;
+}
+
 export interface ProductCreateInput {
   name: string;
   description: string;
   price: number;
   category_id: number;
   image_signed_ids?: string[];
-  variants?: {
-    size: string;
-    color: string;
-    sku: string;
-    quantity: number;
-  }[];
+  variants?: ProductVariantInput[];
 }
 
 export interface ProductUpdateInput {
@@ -61,4 +64,5 @@ export interface ProductUpdateInput {
   category_id?: number;
   image_signed_ids?: string[];
   existing_image_signed_ids?: string[];
+  variants?: ProductVariantInput[];
 }

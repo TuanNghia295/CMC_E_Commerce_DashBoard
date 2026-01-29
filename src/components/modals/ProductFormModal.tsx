@@ -26,7 +26,7 @@ export default function ProductFormModal({
     category_id: "",
     image_signed_ids: [] as string[],
     existing_image_signed_ids: [] as string[],
-    variants: [] as { size: string; color: string; sku: string; quantity: string }[],
+    variants: [] as { id?: number; size: string; color: string; sku: string; quantity: string }[],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,6 +46,7 @@ export default function ProductFormModal({
         image_signed_ids: [],
         existing_image_signed_ids: product.images_signed_ids || [],
         variants: product.variants?.map(v => ({
+          id: v.id,
           size: v.size,
           color: v.color,
           sku: v.sku,
@@ -70,7 +71,8 @@ export default function ProductFormModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
+    console.log("formData",formData);
+    
     // Validation
     if (!formData.name.trim()) {
       setError("Product name is required");
@@ -102,6 +104,7 @@ export default function ProductFormModal({
         }),
         ...(formData.variants.length > 0 && {
           variants: formData.variants.map(v => ({
+            ...(v.id && { id: v.id }),   // chỉ gửi id nếu tồn tại
             size: v.size,
             color: v.color,
             sku: v.sku,
