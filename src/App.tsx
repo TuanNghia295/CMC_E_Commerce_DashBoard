@@ -25,6 +25,7 @@ import UserListPage from "./pages/UserListPage";
 import ProductListTable from "./components/tables/ProductList/ProductListTable";
 import CategoryListTable from "./components/tables/CategoryList/CategoryListTable";
 import BannerListPage from "./pages/BannerListPage";
+import OrdersListPage from "./pages/OrdersListPage";
 
 export default function App() {
   return (
@@ -42,6 +43,7 @@ export default function App() {
               <Route path="/products" element={<ProductListTable/>}/>
               <Route path="/categories" element={<CategoryListTable/>}/>
               <Route path="/banners" element={<BannerListPage/>}/>
+              <Route path="/orders" element={<OrdersListPage />} />
 
               {/* Others Page */}
               <Route path="/profile" element={<UserProfiles />} />
