@@ -44,6 +44,7 @@ export default function App() {
               <Route path="/categories" element={<CategoryListTable/>}/>
               <Route path="/banners" element={<BannerListPage/>}/>
               <Route path="/orders" element={<OrdersListPage />} />
+              <Route path="/orders/:status" element={<OrdersListPage />} />
 
               {/* Others Page */}
               <Route path="/profile" element={<UserProfiles />} />

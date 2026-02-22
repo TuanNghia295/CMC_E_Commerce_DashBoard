@@ -1,8 +1,7 @@
 export type OrderStatus =
   | "pending"
-  | "processing"
-  | "shipped"
-  | "delivered"
+  | "shipping"
+  | "completed"
   | "cancelled";
 
 export interface OrderUser {
@@ -35,6 +34,7 @@ export interface OrderListResponse {
 
 export interface OrderQueryParams {
   q?: string;
+  status?: OrderStatus;
   sort_by?: "created_at" | "total_amount" | "total_price" | "status";
   sort_dir?: "asc" | "desc";
   page?: number;

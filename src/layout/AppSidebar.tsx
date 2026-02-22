@@ -50,10 +50,10 @@ const navItems: NavItem[] = [
     icon: <ShootingStarIcon />,
     name: "Orders",
     subItems: [
-      { name: "All Orders", path: "/orders", pro: false },
+      { name: "All", path: "/orders", pro: false },
       { name: "Pending", path: "/orders/pending", pro: false },
-      { name: "Processing", path: "/orders/processing", pro: false },
-      { name: "Delivered", path: "/orders/delivered", pro: false },
+      { name: "Shipping", path: "/orders/shipping", pro: false },
+      { name: "Completed", path: "/orders/completed", pro: false },
       { name: "Cancelled", path: "/orders/cancelled", pro: false },
     ],
   },

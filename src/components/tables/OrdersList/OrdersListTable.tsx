@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useParams } from "react-router";
 import {
   Table,
   TableBody,
@@ -13,9 +14,8 @@ import type { Order, OrderQueryParams, OrderStatus } from "../../../types/order"
 
 const statusOptions: OrderStatus[] = [
   "pending",
-  "processing",
-  "shipped",
-  "delivered",
+  "shipping",
+  "completed",
   "cancelled",
 ];
 
@@ -25,18 +25,26 @@ export default function OrdersListTable() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<OrderQueryParams["sort_by"]>("created_at");
   const [sortDir, setSortDir] = useState<OrderQueryParams["sort_dir"]>("desc");
+  const { status: statusParam } = useParams<{ status?: string }>();
 
   const debouncedSearch = useDebounce(searchQuery, 500);
+  const routeStatus = useMemo<OrderStatus | undefined>(() => {
+    if (!statusParam) return undefined;
+    return statusOptions.includes(statusParam as OrderStatus)
+      ? (statusParam as OrderStatus)
+      : undefined;
+  }, [statusParam]);
 
   const queryParams = useMemo<OrderQueryParams>(
     () => ({
       page: currentPage,
       per_page: perPage,
       q: debouncedSearch || undefined,
+      status: routeStatus,
       sort_by: sortBy,
       sort_dir: sortDir,
     }),
-    [currentPage, perPage, debouncedSearch, sortBy, sortDir]
+    [currentPage, perPage, debouncedSearch, routeStatus, sortBy, sortDir]
   );
 
   const { data, isLoading, error } = useOrders(queryParams);

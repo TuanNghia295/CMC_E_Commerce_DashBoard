@@ -6,6 +6,7 @@ export const orderApi = {
     const queryParams = new URLSearchParams();
 
     if (params.q) queryParams.append("q", params.q);
+    if (params.status) queryParams.append("status", params.status);
     if (params.sort_by) queryParams.append("sort_by", params.sort_by);
     if (params.sort_dir) queryParams.append("sort_dir", params.sort_dir);
     if (params.page) queryParams.append("page", params.page.toString());
