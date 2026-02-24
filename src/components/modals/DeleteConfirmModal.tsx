@@ -1,3 +1,5 @@
+import { createPortal } from "react-dom";
+
 interface DeleteConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -15,8 +17,8 @@ export default function DeleteConfirmModal({
 }: DeleteConfirmModalProps) {
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+  return createPortal(
+    <div className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/50">
       <div className="bg-white dark:bg-gray-900 rounded-xl p-6 w-full max-w-md">
         <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
           Confirm Delete
@@ -44,6 +46,7 @@ export default function DeleteConfirmModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

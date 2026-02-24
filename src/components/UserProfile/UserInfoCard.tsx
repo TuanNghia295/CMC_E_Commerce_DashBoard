@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useModal } from "../../hooks/useModal";
 import { useDebounce } from "../../hooks/useDebounce";
 import { useUpdateUser } from "../../hooks/useUpdateUser";
@@ -35,7 +35,7 @@ export default function UserInfoCard({ user }: UserInfoCardProps) {
     setEmail(user.email ?? "");
     setPhone(user.phone ?? "");
     setHasChanges(false);
-  }, [isOpen]);
+  }, [isOpen, user.full_name, user.email, user.phone]);
 
 
   // Debounce inputs
@@ -43,8 +43,44 @@ export default function UserInfoCard({ user }: UserInfoCardProps) {
   const dEmail = useDebounce(email, 800);
   const dPhone = useDebounce(phone, 800);
 
+  const autoSave = useCallback(
+    async (full_name?: string, email?: string, phone?: string) => {
+      const safeFullName = (full_name ?? "").trim();
+      const safeEmail = (email ?? "").trim();
+      const safePhone = (phone ?? "").trim();
+
+      const data: any = {};
+
+      if (safeFullName !== user.full_name) {
+        data.full_name = safeFullName;
+      }
+
+      if (safeEmail !== user.email) {
+        data.email = safeEmail;
+      }
+
+      if (safePhone !== (user.phone || "")) {
+        data.phone = safePhone || null;
+      }
+
+      if (Object.keys(data).length === 0) return;
+
+      try {
+        setIsSaving(true);
+        await updateUserMutation.mutateAsync({
+          id: user.id,
+          data,
+        });
+        setHasChanges(false);
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    [updateUserMutation, user.id, user.full_name, user.email, user.phone]
+  );
+
   // Detect changes
-    useEffect(() => {
+  useEffect(() => {
     if (!isOpen) return;
 
     // chưa load user → bỏ qua
@@ -60,44 +96,7 @@ export default function UserInfoCard({ user }: UserInfoCardProps) {
     if (changed) {
       autoSave(dFullName, dEmail, dPhone);
     }
-  }, [dFullName, dEmail, dPhone, isOpen]);
-
-  async function autoSave(
-  full_name?: string,
-  email?: string,
-  phone?: string
-) {
-  const safeFullName = (full_name ?? "").trim();
-  const safeEmail = (email ?? "").trim();
-  const safePhone = (phone ?? "").trim();
-
-  const data: any = {};
-
-  if (safeFullName !== user.full_name) {
-    data.full_name = safeFullName;
-  }
-
-  if (safeEmail !== user.email) {
-    data.email = safeEmail;
-  }
-
-  if (safePhone !== (user.phone || "")) {
-    data.phone = safePhone || null;
-  }
-
-  if (Object.keys(data).length === 0) return;
-
-  try {
-    setIsSaving(true);
-    await updateUserMutation.mutateAsync({
-      id: user.id,
-      data,
-    });
-    setHasChanges(false);
-  } finally {
-    setIsSaving(false);
-  }
-  }
+  }, [dFullName, dEmail, dPhone, isOpen, fullName, email, user.full_name, user.email, user.phone, autoSave]);
 
 
   function handleClose() {

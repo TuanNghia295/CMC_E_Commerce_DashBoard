@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { User, UserCreateInput, UserUpdateInput } from "../../types/user";
 import AvatarUpload from "../form/input/AvatarUpload";
 import { getAvatarUrl } from "../../utils/urlHelpers";
@@ -104,8 +105,8 @@ export default function UserFormModal({
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+  return createPortal(
+    <div className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/50">
       <div className="bg-white dark:bg-gray-900 rounded-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
         <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
           {mode === "create" ? "Add New User" : "Edit User"}
@@ -249,6 +250,7 @@ export default function UserFormModal({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

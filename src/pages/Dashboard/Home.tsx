@@ -1,12 +1,11 @@
 import { useMemo } from "react";
 import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
-import MonthlySalesChart from "../../components/ecommerce/MonthlySalesChart";
 import StatisticsChart from "../../components/ecommerce/StatisticsChart";
-import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
-import RecentOrders from "../../components/ecommerce/RecentOrders";
 import OrderStatusDistributionCard from "../../components/ecommerce/OrderStatusDistributionCard";
 import PageMeta from "../../components/common/PageMeta";
 import { useDashboardReport } from "../../hooks/useDashboardReport";
+import { useOrders } from "../../hooks/useOrders";
+import { useUsers } from "../../hooks/useUsers";
 
 function toIsoDate(date: Date) {
   return date.toISOString().split("T")[0];
@@ -25,18 +24,63 @@ export default function Home() {
   }, []);
 
   const { data, isLoading, isError } = useDashboardReport(defaultRange);
+  const {
+    data: usersData,
+    isLoading: isUsersLoading,
+    isError: isUsersError,
+  } = useUsers({ per_page: 1 });
+  const {
+    data: ordersData,
+    isLoading: isOrdersLoading,
+    isError: isOrdersError,
+  } = useOrders({ per_page: 1 });
+  const {
+    data: pendingOrdersData,
+    isLoading: isPendingOrdersLoading,
+    isError: isPendingOrdersError,
+  } = useOrders({ per_page: 1, status: "pending" });
+  const {
+    data: shippingOrdersData,
+    isLoading: isShippingOrdersLoading,
+    isError: isShippingOrdersError,
+  } = useOrders({ per_page: 1, status: "shipping" });
+  const {
+    data: completedOrdersData,
+    isLoading: isCompletedOrdersLoading,
+    isError: isCompletedOrdersError,
+  } = useOrders({ per_page: 1, status: "completed" });
+  const {
+    data: cancelledOrdersData,
+    isLoading: isCancelledOrdersLoading,
+    isError: isCancelledOrdersError,
+  } = useOrders({ per_page: 1, status: "cancelled" });
+
+  const totalCustomers = usersData?.meta.total_count ?? 0;
+  const totalOrders = ordersData?.meta.total_count ?? 0;
 
   const trendBuckets = data?.sales_revenue_trend ?? [];
   const categories = trendBuckets.map((bucket) => bucket.label);
   const salesSeries = trendBuckets.map((bucket) => bucket.orders_count);
   const revenueSeries = trendBuckets.map((bucket) => bucket.revenue);
 
-  const statusDistribution = data?.status_distribution ?? {
-    pending: 0,
-    shipping: 0,
-    completed: 0,
-    cancelled: 0,
+  const statusDistribution = {
+    pending: pendingOrdersData?.meta.total_count ?? 0,
+    shipping: shippingOrdersData?.meta.total_count ?? 0,
+    completed: completedOrdersData?.meta.total_count ?? 0,
+    cancelled: cancelledOrdersData?.meta.total_count ?? 0,
   };
+
+  const isStatusDistributionLoading =
+    isPendingOrdersLoading ||
+    isShippingOrdersLoading ||
+    isCompletedOrdersLoading ||
+    isCancelledOrdersLoading;
+
+  const isStatusDistributionError =
+    isPendingOrdersError ||
+    isShippingOrdersError ||
+    isCompletedOrdersError ||
+    isCancelledOrdersError;
 
   return (
     <>
@@ -45,22 +89,18 @@ export default function Home() {
         description="This is React.js Ecommerce Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
       <div className="grid grid-cols-12 gap-4 md:gap-6">
-        <div className="col-span-12 space-y-6 xl:col-span-7">
-          <EcommerceMetrics />
-
-          <MonthlySalesChart
-            categories={categories}
-            salesData={salesSeries}
-            isLoading={isLoading}
-            isError={isError}
+        <div className="col-span-12">
+          <EcommerceMetrics
+            totalCustomers={totalCustomers}
+            totalOrders={totalOrders}
+            isCustomersLoading={isUsersLoading}
+            isOrdersLoading={isOrdersLoading}
+            isCustomersError={isUsersError}
+            isOrdersError={isOrdersError}
           />
         </div>
 
-        <div className="col-span-12 xl:col-span-5">
-          <MonthlyTarget />
-        </div>
-
-        <div className="col-span-12">
+        <div className="col-span-12 xl:col-span-7">
           <StatisticsChart
             categories={categories}
             salesData={salesSeries}
@@ -70,17 +110,17 @@ export default function Home() {
           />
         </div>
 
-        <div className="col-span-12 xl:col-span-5">
+
+       
+
+        <div className="col-span-12 xl:col-span-4">
           <OrderStatusDistributionCard
             statusDistribution={statusDistribution}
-            isLoading={isLoading}
-            isError={isError}
+            isLoading={isStatusDistributionLoading}
+            isError={isStatusDistributionError}
           />
         </div>
 
-        <div className="col-span-12 xl:col-span-7">
-          <RecentOrders />
-        </div>
       </div>
     </>
   );

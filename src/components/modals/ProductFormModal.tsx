@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { Product, ProductCreateInput, ProductUpdateInput } from "../../types/product";
 import { useCategories } from "../../hooks/useCategories";
 import ImageUpload from "../form/input/ImageUpload";
@@ -124,8 +125,8 @@ export default function ProductFormModal({
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+  return createPortal(
+    <div className="fixed inset-0 z-[100000] flex items-center justify-center bg-black/50 p-4">
       <div className="bg-white dark:bg-gray-900 rounded-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
           {mode === "create" ? "Add New Product" : "Edit Product"}
@@ -377,6 +378,7 @@ export default function ProductFormModal({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

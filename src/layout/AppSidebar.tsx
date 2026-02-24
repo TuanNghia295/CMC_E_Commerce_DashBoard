@@ -3,15 +3,10 @@ import { Link, useLocation } from "react-router";
 
 import {
   BoxIcon,
-  BoxIconLine,
   ChevronDownIcon,
-  GridIcon,
   HorizontaLDots,
-  MailIcon,
   ShootingStarIcon,
-  TaskIcon,
   UserCircleIcon,
-  PieChartIcon,
   PageIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
@@ -25,11 +20,6 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  {
-    icon: <GridIcon />,
-    name: "Dashboard",
-    path: "/",
-  },
   {
     icon: <UserCircleIcon />,
     name: "User Management",
@@ -68,52 +58,52 @@ const navItems: NavItem[] = [
       { name: "Banner List", path: "/banners", pro: false },
     ],
   },
-  {
-    icon: <PieChartIcon />,
-    name: "Analytics & Reports",
-    subItems: [
-      { name: "Sales Report", path: "/analytics/sales", pro: false },
-      { name: "Revenue Report", path: "/analytics/revenue", pro: false },
-      { name: "Product Analytics", path: "/analytics/products", pro: false },
-      { name: "Customer Insights", path: "/analytics/customers", pro: false },
-    ],
-  },
+  // {
+  //   icon: <PieChartIcon />,
+  //   name: "Analytics & Reports",
+  //   subItems: [
+  //     { name: "Sales Report", path: "/analytics/sales", pro: false },
+  //     { name: "Revenue Report", path: "/analytics/revenue", pro: false },
+  //     { name: "Product Analytics", path: "/analytics/products", pro: false },
+  //     { name: "Customer Insights", path: "/analytics/customers", pro: false },
+  //   ],
+  // },
 ];
 
 const othersItems: NavItem[] = [
-  {
-    icon: <BoxIconLine />,
-    name: "Inventory",
-    subItems: [
-      { name: "Stock Management", path: "/inventory/stock", pro: false },
-      { name: "Suppliers", path: "/inventory/suppliers", pro: false },
-      { name: "Warehouses", path: "/inventory/warehouses", pro: false },
-    ],
-  },
-  {
-    icon: <MailIcon />,
-    name: "Communications",
-    subItems: [
-      { name: "Messages", path: "/messages", pro: false },
-      { name: "Notifications", path: "/notifications", pro: false },
-      { name: "Email Templates", path: "/email-templates", pro: false },
-    ],
-  },
-  {
-    icon: <TaskIcon />,
-    name: "Settings",
-    subItems: [
-      { name: "General Settings", path: "/settings/general", pro: false },
-      { name: "Payment Gateway", path: "/settings/payment", pro: false },
-      { name: "Shipping Settings", path: "/settings/shipping", pro: false },
-      { name: "Tax Settings", path: "/settings/tax", pro: false },
-    ],
-  },
-  {
-    icon: <UserCircleIcon />,
-    name: "Profile",
-    path: "/profile",
-  },
+  // {
+  //   icon: <BoxIconLine />,
+  //   name: "Inventory",
+  //   subItems: [
+  //     { name: "Stock Management", path: "/inventory/stock", pro: false },
+  //     { name: "Suppliers", path: "/inventory/suppliers", pro: false },
+  //     { name: "Warehouses", path: "/inventory/warehouses", pro: false },
+  //   ],
+  // },
+  // {
+  //   icon: <MailIcon />,
+  //   name: "Communications",
+  //   subItems: [
+  //     { name: "Messages", path: "/messages", pro: false },
+  //     { name: "Notifications", path: "/notifications", pro: false },
+  //     { name: "Email Templates", path: "/email-templates", pro: false },
+  //   ],
+  // },
+  // {
+  //   icon: <TaskIcon />,
+  //   name: "Settings",
+  //   subItems: [
+  //     { name: "General Settings", path: "/settings/general", pro: false },
+  //     { name: "Payment Gateway", path: "/settings/payment", pro: false },
+  //     { name: "Shipping Settings", path: "/settings/shipping", pro: false },
+  //     { name: "Tax Settings", path: "/settings/tax", pro: false },
+  //   ],
+  // },
+  // {
+  //   icon: <UserCircleIcon />,
+  //   name: "Profile",
+  //   path: "/profile",
+  // },
 ];
 
 const AppSidebar: React.FC = () => {
@@ -383,7 +373,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "System"
+                 null
                 ) : (
                   <HorizontaLDots />
                 )}

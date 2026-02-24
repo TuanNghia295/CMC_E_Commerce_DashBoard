@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
-import NotificationDropdown from "../components/header/NotificationDropdown";
 import UserDropdown from "../components/header/UserDropdown";
 
 const AppHeader: React.FC = () => {
@@ -116,7 +115,7 @@ const AppHeader: React.FC = () => {
             </svg>
           </button>
 
-          <div className="hidden lg:block">
+          {/* <div className="hidden lg:block">
             <form>
               <div className="relative">
                 <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
@@ -149,7 +148,7 @@ const AppHeader: React.FC = () => {
                 </button>
               </div>
             </form>
-          </div>
+          </div> */}
         </div>
         <div
           className={`${
@@ -160,7 +159,7 @@ const AppHeader: React.FC = () => {
             {/* <!-- Dark Mode Toggler --> */}
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
-            <NotificationDropdown />
+            {/* <NotificationDropdown /> */}
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
