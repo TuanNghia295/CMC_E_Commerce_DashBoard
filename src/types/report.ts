@@ -16,8 +16,14 @@ export interface DashboardStatusDistribution {
   cancelled: number;
 }
 
+export interface DashboardReportSummary {
+  total_orders: number;
+  total_revenue: number;
+}
+
 export interface DashboardReportResponse {
   range: DashboardReportRange;
+  summary: DashboardReportSummary;
   sales_revenue_trend: SalesRevenueTrendBucket[];
   status_distribution: DashboardStatusDistribution;
 }

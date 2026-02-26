@@ -133,10 +133,9 @@ export default function ProductListTable() {
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(price);
+    return `${new Intl.NumberFormat("en-US", {
+      maximumFractionDigits: 0,
+    }).format(price)} VND`;
   };
 
   // Modal handlers
@@ -250,7 +249,7 @@ export default function ProductListTable() {
                 type="number"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                placeholder="$0"
+                placeholder="0 VND"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white"
               />
             </div> */}
@@ -264,7 +263,7 @@ export default function ProductListTable() {
                 type="number"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                placeholder="$999"
+                placeholder="999 VND"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white"
               />
             </div> */}

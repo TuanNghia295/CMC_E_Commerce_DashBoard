@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
 import StatisticsChart from "../../components/ecommerce/StatisticsChart";
 import OrderStatusDistributionCard from "../../components/ecommerce/OrderStatusDistributionCard";
@@ -23,7 +23,9 @@ export default function Home() {
     };
   }, []);
 
-  const { data, isLoading, isError } = useDashboardReport(defaultRange);
+  const [chartRange, setChartRange] = useState(defaultRange);
+
+  const { data, isLoading, isError } = useDashboardReport(chartRange);
   const {
     data: usersData,
     isLoading: isUsersLoading,
@@ -56,7 +58,8 @@ export default function Home() {
   } = useOrders({ per_page: 1, status: "cancelled" });
 
   const totalCustomers = usersData?.meta.total_count ?? 0;
-  const totalOrders = ordersData?.meta.total_count ?? 0;
+  const totalOrders = data?.summary.total_orders ?? ordersData?.meta.total_count ?? 0;
+  const totalRevenue = data?.summary.total_revenue ?? 0;
 
   const trendBuckets = data?.sales_revenue_trend ?? [];
   const categories = trendBuckets.map((bucket) => bucket.label);
@@ -93,10 +96,13 @@ export default function Home() {
           <EcommerceMetrics
             totalCustomers={totalCustomers}
             totalOrders={totalOrders}
+            totalRevenue={totalRevenue}
             isCustomersLoading={isUsersLoading}
-            isOrdersLoading={isOrdersLoading}
+            isOrdersLoading={isLoading}
+            isRevenueLoading={isLoading}
             isCustomersError={isUsersError}
-            isOrdersError={isOrdersError}
+            isOrdersError={isError}
+            isRevenueError={isError}
           />
         </div>
 
@@ -107,6 +113,8 @@ export default function Home() {
             revenueData={revenueSeries}
             isLoading={isLoading}
             isError={isError}
+            selectedRange={chartRange}
+            onDateRangeChange={setChartRange}
           />
         </div>
 

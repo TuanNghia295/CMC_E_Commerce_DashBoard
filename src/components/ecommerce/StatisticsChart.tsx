@@ -5,12 +5,19 @@ import flatpickr from "flatpickr";
 import ChartTab from "../common/ChartTab";
 import { CalenderIcon } from "../../icons";
 
+interface DashboardDateRange {
+  from_date: string;
+  to_date: string;
+}
+
 interface StatisticsChartProps {
   categories: string[];
   salesData: number[];
   revenueData: number[];
   isLoading: boolean;
   isError: boolean;
+  selectedRange?: DashboardDateRange;
+  onDateRangeChange?: (range: DashboardDateRange) => void;
 }
 
 export default function StatisticsChart({
@@ -19,23 +26,42 @@ export default function StatisticsChart({
   revenueData,
   isLoading,
   isError,
+  selectedRange,
+  onDateRangeChange,
 }: StatisticsChartProps) {
   const datePickerRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!datePickerRef.current) return;
 
+    const toIsoDate = (date: Date) => date.toISOString().split("T")[0];
+
     const today = new Date();
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(today.getDate() - 6);
+
+    const defaultFromDate = selectedRange?.from_date
+      ? new Date(selectedRange.from_date)
+      : sevenDaysAgo;
+    const defaultToDate = selectedRange?.to_date
+      ? new Date(selectedRange.to_date)
+      : today;
 
     const fp = flatpickr(datePickerRef.current, {
       mode: "range",
       static: true,
       monthSelectorType: "static",
       dateFormat: "M d",
-      defaultDate: [sevenDaysAgo, today],
+      defaultDate: [defaultFromDate, defaultToDate],
       clickOpens: true,
+      onChange: (selectedDates) => {
+        if (selectedDates.length !== 2) return;
+
+        onDateRangeChange?.({
+          from_date: toIsoDate(selectedDates[0]),
+          to_date: toIsoDate(selectedDates[1]),
+        });
+      },
       prevArrow:
         '<svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 15L7.5 10L12.5 5" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
       nextArrow:
@@ -47,7 +73,7 @@ export default function StatisticsChart({
         fp.destroy();
       }
     };
-  }, []);
+  }, [onDateRangeChange, selectedRange?.from_date, selectedRange?.to_date]);
 
   const options: ApexOptions = {
     legend: {

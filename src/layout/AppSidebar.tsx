@@ -8,6 +8,7 @@ import {
   ShootingStarIcon,
   UserCircleIcon,
   PageIcon,
+  GridIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
@@ -20,6 +21,11 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
+  {
+    icon: <GridIcon />,
+    name: "Dashboard",
+    path: "/",
+  },
   {
     icon: <UserCircleIcon />,
     name: "User Management",

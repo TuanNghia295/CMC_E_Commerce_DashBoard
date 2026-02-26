@@ -75,10 +75,9 @@ export default function OrdersListTable() {
 
   const formatCurrency = (value?: number | null) => {
     if (value == null) return "-";
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(value);
+    return `${new Intl.NumberFormat("en-US", {
+      maximumFractionDigits: 0,
+    }).format(value)} VND`;
   };
 
   const formatDate = (dateString?: string) => {
