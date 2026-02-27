@@ -4,6 +4,8 @@ export type OrderStatus =
   | "completed"
   | "cancelled";
 
+export type PaymentMethod = "cod" | "stripe";
+
 export interface OrderUser {
   id: number;
   full_name: string;
@@ -20,6 +22,10 @@ export interface Order {
   created_at: string;
   updated_at?: string;
   user?: OrderUser;
+  payment_method?: PaymentMethod;
+  payment?: {
+    payment_method?: PaymentMethod;
+  };
 }
 
 export interface OrderListResponse {
@@ -35,6 +41,7 @@ export interface OrderListResponse {
 export interface OrderQueryParams {
   q?: string;
   status?: OrderStatus;
+  payment_method?: PaymentMethod;
   sort_by?: "created_at" | "total_amount" | "total_price" | "status";
   sort_dir?: "asc" | "desc";
   page?: number;

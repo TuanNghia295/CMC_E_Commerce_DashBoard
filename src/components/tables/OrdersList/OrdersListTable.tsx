@@ -10,7 +10,12 @@ import {
 import { useOrders } from "../../../hooks/useOrders";
 import { useUpdateOrderStatus } from "../../../hooks/useUpdateOrderStatus";
 import { useDebounce } from "../../../hooks/useDebounce";
-import type { Order, OrderQueryParams, OrderStatus } from "../../../types/order";
+import type {
+  Order,
+  OrderQueryParams,
+  OrderStatus,
+  PaymentMethod,
+} from "../../../types/order";
 
 const statusOptions: OrderStatus[] = [
   "pending",
@@ -19,10 +24,17 @@ const statusOptions: OrderStatus[] = [
   "cancelled",
 ];
 
+const paymentOptions: Array<{ value: "all" | PaymentMethod; label: string }> = [
+  { value: "all", label: "All" },
+  { value: "cod", label: "COD" },
+  { value: "stripe", label: "Credit Card" },
+];
+
 export default function OrdersListTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"all" | PaymentMethod>("all");
   const [sortBy, setSortBy] = useState<OrderQueryParams["sort_by"]>("created_at");
   const [sortDir, setSortDir] = useState<OrderQueryParams["sort_dir"]>("desc");
   const { status: statusParam } = useParams<{ status?: string }>();
@@ -41,10 +53,11 @@ export default function OrdersListTable() {
       per_page: perPage,
       q: debouncedSearch || undefined,
       status: routeStatus,
+      payment_method: paymentMethod === "all" ? undefined : paymentMethod,
       sort_by: sortBy,
       sort_dir: sortDir,
     }),
-    [currentPage, perPage, debouncedSearch, routeStatus, sortBy, sortDir]
+    [currentPage, perPage, debouncedSearch, routeStatus, paymentMethod, sortBy, sortDir]
   );
 
   const { data, isLoading, error } = useOrders(queryParams);
@@ -68,6 +81,11 @@ export default function OrdersListTable() {
     setCurrentPage(newPage);
   };
 
+  const handlePaymentMethodChange = (method: "all" | PaymentMethod) => {
+    setPaymentMethod(method);
+    setCurrentPage(1);
+  };
+
   const handlePerPageChange = (newPerPage: number) => {
     setPerPage(newPerPage);
     setCurrentPage(1);
@@ -89,10 +107,19 @@ export default function OrdersListTable() {
     });
   };
 
+  const formatPaymentMethod = (method?: PaymentMethod) => {
+    if (method === "cod") return "COD";
+    if (method === "stripe") return "Credit Card";
+    return "-";
+  };
+
   const handleStatusChange = (order: Order, status: OrderStatus) => {
     if (order.status === status) return;
     updateStatusMutation.mutate({ id: order.id, status });
   };
+
+  const controlClassName =
+    "h-10 rounded-lg border border-gray-300 px-3 text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-white";
 
   if (error) {
     return (
@@ -105,7 +132,7 @@ export default function OrdersListTable() {
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
             Search
           </label>
@@ -117,22 +144,36 @@ export default function OrdersListTable() {
               setCurrentPage(1);
             }}
             placeholder="Search by order code, user, phone..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+            className={`w-full ${controlClassName}`}
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap items-end gap-2">
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+              Payment
+            </label>
+            <select
+              value={paymentMethod}
+              onChange={(e) => handlePaymentMethodChange(e.target.value as "all" | PaymentMethod)}
+              className={controlClassName}
+            >
+              {paymentOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
           <button
             onClick={handleSortToggle}
-            className="px-3 py-2 text-sm bg-gray-200 text-gray-700 rounded-md
-            hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+            className="h-10 rounded-lg bg-gray-200 px-3 text-sm text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
           >
             {sortDir === "asc" ? "A-Z ↑" : "Z-A ↓"}
           </button>
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="px-3 py-2 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200
-              dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
+              className="h-10 rounded-lg bg-red-100 px-3 text-sm text-red-700 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
             >
               Clear
             </button>
@@ -176,6 +217,9 @@ export default function OrdersListTable() {
                   <TableCell className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
                     Total
                   </TableCell>
+                  <TableCell className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Payment Method
+                  </TableCell>
                   <TableCell
                     className="px-5 py-4 text-left text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
                     onClick={() => handleSort("status")}
@@ -193,7 +237,7 @@ export default function OrdersListTable() {
               <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                 {orders.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
+                    <TableCell colSpan={7} className="px-5 py-8 text-center text-gray-500 dark:text-gray-400">
                       No orders found
                     </TableCell>
                   </TableRow>
@@ -219,6 +263,9 @@ export default function OrdersListTable() {
                       </TableCell>
                       <TableCell className="px-5 py-3 text-sm text-gray-900 dark:text-gray-100">
                         {formatCurrency(order.total_amount ?? order.total_price)}
+                      </TableCell>
+                      <TableCell className="px-5 py-3 text-sm text-gray-600 dark:text-gray-400">
+                        {formatPaymentMethod(order.payment_method ?? order.payment?.payment_method)}
                       </TableCell>
                       <TableCell className="px-5 py-3 text-sm">
                         <select

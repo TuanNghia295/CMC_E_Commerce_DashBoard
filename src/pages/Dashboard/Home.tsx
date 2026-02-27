@@ -31,11 +31,7 @@ export default function Home() {
     isLoading: isUsersLoading,
     isError: isUsersError,
   } = useUsers({ per_page: 1 });
-  const {
-    data: ordersData,
-    isLoading: isOrdersLoading,
-    isError: isOrdersError,
-  } = useOrders({ per_page: 1 });
+  const { data: ordersData } = useOrders({ per_page: 1 });
   const {
     data: pendingOrdersData,
     isLoading: isPendingOrdersLoading,

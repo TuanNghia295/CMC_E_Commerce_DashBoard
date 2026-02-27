@@ -3,9 +3,27 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
+import NotificationDropdown from "../components/header/NotificationDropdown";
 import UserDropdown from "../components/header/UserDropdown";
 
-const AppHeader: React.FC = () => {
+type HeaderOrderNotification = {
+  id: number;
+  orderCode: string;
+  customerLabel: string;
+  createdAt: string;
+};
+
+type AppHeaderProps = {
+  notifications: HeaderOrderNotification[];
+  unreadCount: number;
+  onNotificationsSeen: () => void;
+};
+
+const AppHeader: React.FC<AppHeaderProps> = ({
+  notifications,
+  unreadCount,
+  onNotificationsSeen,
+}) => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
@@ -159,7 +177,11 @@ const AppHeader: React.FC = () => {
             {/* <!-- Dark Mode Toggler --> */}
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
-            {/* <NotificationDropdown /> */}
+            <NotificationDropdown
+              notifications={notifications}
+              unreadCount={unreadCount}
+              onOpen={onNotificationsSeen}
+            />
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
