@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import type { Product, ProductCreateInput, ProductUpdateInput } from "../../types/product";
 import { useCategories } from "../../hooks/useCategories";
@@ -32,6 +32,11 @@ export default function ProductFormModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+
+  const initialImages = useMemo(
+    () => (mode === "edit" ? product?.images || [] : []),
+    [mode, product?.images]
+  );
 
   // Fetch categories for selection
   const { data: categoriesResponse } = useCategories({ per_page: 100, status: "active" });
@@ -151,7 +156,7 @@ export default function ProductFormModal({
               Product Images
             </label>
             <ImageUpload
-              currentImages={product?.images || []}
+              currentImages={initialImages}
               existingImageSignedIds={formData.existing_image_signed_ids}
               onUploadComplete={(blobSignedIds) => {
                 setFormData({ ...formData, image_signed_ids: blobSignedIds });
