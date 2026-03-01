@@ -19,7 +19,7 @@ export default function MonthlySalesChart({
   isError,
 }: MonthlySalesChartProps) {
   const options: ApexOptions = {
-    colors: ["#465fff"],
+    colors: ["#0a0a0a"],
     chart: {
       fontFamily: "Outfit, sans-serif",
       type: "bar",

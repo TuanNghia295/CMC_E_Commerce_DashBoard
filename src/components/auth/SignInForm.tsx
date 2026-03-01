@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
-import { useForm, Controller } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
-import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import { useLogin } from "../../hooks/useLogin";
 import { useDebounce } from "../../hooks/useDebounce";
@@ -25,7 +24,6 @@ export default function SignInForm() {
     register,
     handleSubmit,
     watch,
-    control,
     formState: { errors },
   } = useForm<SignInFormData>({
     defaultValues: {
@@ -130,7 +128,7 @@ export default function SignInForm() {
               </div>
 
               {/* Remember */}
-              <div className="flex items-center justify-between">
+              {/* <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Controller
                     name="rememberMe"
@@ -152,7 +150,7 @@ export default function SignInForm() {
                 >
                   Forgot password?
                 </Link>
-              </div>
+              </div> */}
 
               {/* Errors */}
               {apiErrorMessage && (
@@ -171,12 +169,12 @@ export default function SignInForm() {
           </form>
 
           {/* Footer */}
-          <div className="mt-5 text-sm text-center text-gray-700 dark:text-gray-400">
+          {/* <div className="mt-5 text-sm text-center text-gray-700 dark:text-gray-400">
             Don&apos;t have an account?{" "}
             <Link to="/signup" className="text-brand-500">
               Sign Up
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

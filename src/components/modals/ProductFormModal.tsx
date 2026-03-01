@@ -97,17 +97,24 @@ export default function ProductFormModal({
 
     try {
       setIsSubmitting(true);
+      const mergedImageSignedIds = [
+        ...formData.existing_image_signed_ids,
+        ...formData.image_signed_ids,
+      ];
+
       const submitData: ProductCreateInput | ProductUpdateInput = {
         name: formData.name.trim(),
         description: formData.description.trim(),
         price: parseFloat(formData.price),
         category_id: parseInt(formData.category_id),
-        ...(formData.image_signed_ids.length > 0 && {
-          image_signed_ids: formData.image_signed_ids,
-        }),
-        ...(mode === "edit" && {
-          existing_image_signed_ids: formData.existing_image_signed_ids,
-        }),
+        ...(mode === "edit"
+          ? {
+              image_signed_ids: mergedImageSignedIds,
+              existing_image_signed_ids: formData.existing_image_signed_ids,
+            }
+          : formData.image_signed_ids.length > 0
+            ? { image_signed_ids: formData.image_signed_ids }
+            : {}),
         ...(formData.variants.length > 0 && {
           variants: formData.variants.map(v => ({
             ...(v.id && { id: v.id }),   // chỉ gửi id nếu tồn tại
