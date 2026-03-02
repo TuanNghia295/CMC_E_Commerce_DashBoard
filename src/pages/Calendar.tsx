@@ -118,8 +118,8 @@ const Calendar: React.FC = () => {
   return (
     <>
       <PageMeta
-        title="React.js Calendar Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
+        title="React.js Calendar Dashboard | NikeAdmin - Next.js Admin Dashboard Template"
+        description="This is React.js Calendar Dashboard page for NikeAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
       <div className="rounded-2xl border  border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="custom-calendar">
@@ -268,6 +268,7 @@ const Calendar: React.FC = () => {
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const renderEventContent = (eventInfo: any) => {
   const colorClass = `fc-bg-${eventInfo.event.extendedProps.calendar.toLowerCase()}`;
   return (

@@ -3,7 +3,6 @@ import axios, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
-  InternalAxiosRequestConfig,
 } from 'axios';
 import { END_POINTS } from './endpoints';
 import { useUserStore } from '../store/userStore';
@@ -18,21 +17,20 @@ interface TypedAxiosInstance extends AxiosInstance {
 
 const AxiosClient: TypedAxiosInstance = axios.create({
   baseURL: END_POINTS,
-  timeout: 10000,
-  withCredentials:true, // dùng để gửi cookie
+  timeout: 30000, // Increased to 30 seconds for file upload operations
 }) as TypedAxiosInstance;
 
 // 🟡 Request Interceptor
-AxiosClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+AxiosClient.interceptors.request.use((config) => {
+  if (!config.url?.includes("auth/logout")) {
     const token = useUserStore.getState().accessToken;
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    return config;
-  },
-  (error: AxiosError) => Promise.reject(error),
-);
+  }
+  return config;
+});
+
 
 // 🟢 Response Interceptor — trả về data trực tiếp
 AxiosClient.interceptors.response.use(
@@ -40,12 +38,11 @@ AxiosClient.interceptors.response.use(
     return response.data;
   },
   async (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      const {setAccessToken, setUserInfo} = useUserStore.getState();
-      setAccessToken(null);
+    const {setTokens, setUserInfo} = useUserStore.getState();
+    if ( error.response?.status === 401 && !error.config?.url?.includes("auth/logout")) {
+      setTokens(null,null);
       setUserInfo(null);
-      await localStorage.removeItem('accessToken');
-    }
+}
     return Promise.reject(error.response?.data || error);
   },
 );

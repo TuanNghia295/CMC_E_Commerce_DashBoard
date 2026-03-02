@@ -1,19 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router";
 
-// Assume these icons are imported from an icon library
 import {
-  BoxCubeIcon,
-  CalenderIcon,
+  BoxIcon,
   ChevronDownIcon,
-  GridIcon,
   HorizontaLDots,
-  ListIcon,
-  PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  TableIcon,
+  ShootingStarIcon,
   UserCircleIcon,
+  PageIcon,
+  GridIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
@@ -29,67 +24,92 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
-  },
-  {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/calendar",
+    path: "/",
   },
   {
     icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
-  },
-  {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
+    name: "User Management",
     subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
+      { name: "User List", path: "/users", pro: false },
     ],
   },
+  {
+    icon: <BoxIcon />,
+    name: "Products",
+    subItems: [
+      { name: "Product List", path: "/products", pro: false },
+      // { name: "Add Product", path: "/products/new", pro: false },
+      { name: "Categories", path: "/categories", pro: false },
+    ],
+  },
+  {
+    icon: <ShootingStarIcon />,
+    name: "Orders",
+    subItems: [
+      { name: "All", path: "/orders", pro: false },
+      { name: "Pending", path: "/orders/pending", pro: false },
+      { name: "Shipping", path: "/orders/shipping", pro: false },
+      { name: "Completed", path: "/orders/completed", pro: false },
+      { name: "Cancelled", path: "/orders/cancelled", pro: false },
+    ],
+  },
+  
+  {
+    icon: <PageIcon />,
+    name: "Banners",
+    subItems: [
+      // { name: "Campaigns", path: "/marketing/campaigns", pro: false },
+      // { name: "Coupons & Discounts", path: "/marketing/coupons", pro: false },
+      // { name: "Email Marketing", path: "/marketing/emails", pro: false },
+      { name: "Banner List", path: "/banners", pro: false },
+    ],
+  },
+  // {
+  //   icon: <PieChartIcon />,
+  //   name: "Analytics & Reports",
+  //   subItems: [
+  //     { name: "Sales Report", path: "/analytics/sales", pro: false },
+  //     { name: "Revenue Report", path: "/analytics/revenue", pro: false },
+  //     { name: "Product Analytics", path: "/analytics/products", pro: false },
+  //     { name: "Customer Insights", path: "/analytics/customers", pro: false },
+  //   ],
+  // },
 ];
 
 const othersItems: NavItem[] = [
-  {
-    icon: <PieChartIcon />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
-  },
-  {
-    icon: <BoxCubeIcon />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
-  {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
-    ],
-  },
+  // {
+  //   icon: <BoxIconLine />,
+  //   name: "Inventory",
+  //   subItems: [
+  //     { name: "Stock Management", path: "/inventory/stock", pro: false },
+  //     { name: "Suppliers", path: "/inventory/suppliers", pro: false },
+  //     { name: "Warehouses", path: "/inventory/warehouses", pro: false },
+  //   ],
+  // },
+  // {
+  //   icon: <MailIcon />,
+  //   name: "Communications",
+  //   subItems: [
+  //     { name: "Messages", path: "/messages", pro: false },
+  //     { name: "Notifications", path: "/notifications", pro: false },
+  //     { name: "Email Templates", path: "/email-templates", pro: false },
+  //   ],
+  // },
+  // {
+  //   icon: <TaskIcon />,
+  //   name: "Settings",
+  //   subItems: [
+  //     { name: "General Settings", path: "/settings/general", pro: false },
+  //     { name: "Payment Gateway", path: "/settings/payment", pro: false },
+  //     { name: "Shipping Settings", path: "/settings/shipping", pro: false },
+  //     { name: "Tax Settings", path: "/settings/tax", pro: false },
+  //   ],
+  // },
+  // {
+  //   icon: <UserCircleIcon />,
+  //   name: "Profile",
+  //   path: "/profile",
+  // },
 ];
 
 const AppSidebar: React.FC = () => {
@@ -308,14 +328,14 @@ const AppSidebar: React.FC = () => {
             <>
               <img
                 className="dark:hidden"
-                src="/images/logo/logo.svg"
+                src="/images/logo/nikeLogo.svg"
                 alt="Logo"
                 width={150}
                 height={40}
               />
               <img
                 className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
+                src="/images/logo/nikeLogoDark.svg"
                 alt="Logo"
                 width={150}
                 height={40}
@@ -323,7 +343,7 @@ const AppSidebar: React.FC = () => {
             </>
           ) : (
             <img
-              src="/images/logo/logo-icon.svg"
+              src="/images/logo/nikeLogo.svg"
               alt="Logo"
               width={32}
               height={32}
@@ -343,7 +363,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
+                  "E-Commerce"
                 ) : (
                   <HorizontaLDots className="size-6" />
                 )}
@@ -359,7 +379,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
+                 null
                 ) : (
                   <HorizontaLDots />
                 )}

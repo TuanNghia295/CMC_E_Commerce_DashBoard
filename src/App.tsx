@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
+import VerifyEmail from "./pages/AuthPages/VerifyEmail";
+import RegistrationSuccess from "./pages/AuthPages/RegistrationSuccess";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
 import Videos from "./pages/UiElements/Videos";
@@ -19,6 +21,11 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import PrivateRoute from "./PrivateRoute";
+import UserListPage from "./pages/UserListPage";
+import ProductListTable from "./components/tables/ProductList/ProductListTable";
+import CategoryListTable from "./components/tables/CategoryList/CategoryListTable";
+import BannerListPage from "./pages/BannerListPage";
+import OrdersListPage from "./pages/OrdersListPage";
 
 export default function App() {
   return (
@@ -30,6 +37,15 @@ export default function App() {
           <Route element={<PrivateRoute />}>
             <Route element={<AppLayout />}>
               <Route index path="/" element={<Home />} />
+
+              {/* E-commerce Routes */}
+              <Route path="/users" element={<UserListPage />} />
+              <Route path="/products" element={<ProductListTable/>}/>
+              <Route path="/categories" element={<CategoryListTable/>}/>
+              <Route path="/banners" element={<BannerListPage/>}/>
+              <Route path="/orders" element={<OrdersListPage />} />
+              <Route path="/orders/:status" element={<OrdersListPage />} />
+
               {/* Others Page */}
               <Route path="/profile" element={<UserProfiles />} />
               <Route path="/calendar" element={<Calendar />} />
@@ -54,6 +70,8 @@ export default function App() {
           {/* Auth Layout */}
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/verify" element={<VerifyEmail />} />
+          <Route path="/registration-success" element={<RegistrationSuccess />} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

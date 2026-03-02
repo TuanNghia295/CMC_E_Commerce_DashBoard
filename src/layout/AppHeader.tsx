@@ -6,7 +6,24 @@ import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import NotificationDropdown from "../components/header/NotificationDropdown";
 import UserDropdown from "../components/header/UserDropdown";
 
-const AppHeader: React.FC = () => {
+type HeaderOrderNotification = {
+  id: number;
+  orderCode: string;
+  customerLabel: string;
+  createdAt: string;
+};
+
+type AppHeaderProps = {
+  notifications: HeaderOrderNotification[];
+  unreadCount: number;
+  onNotificationsSeen: () => void;
+};
+
+const AppHeader: React.FC<AppHeaderProps> = ({
+  notifications,
+  unreadCount,
+  onNotificationsSeen,
+}) => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
@@ -86,12 +103,12 @@ const AppHeader: React.FC = () => {
           <Link to="/" className="lg:hidden">
             <img
               className="dark:hidden"
-              src="./images/logo/logo.svg"
+              src="./images/logo/nikeLogo.svg"
               alt="Logo"
             />
             <img
               className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
+              src="./images/logo/nikeLogoDark.svg"
               alt="Logo"
             />
           </Link>
@@ -116,7 +133,7 @@ const AppHeader: React.FC = () => {
             </svg>
           </button>
 
-          <div className="hidden lg:block">
+          {/* <div className="hidden lg:block">
             <form>
               <div className="relative">
                 <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
@@ -149,7 +166,7 @@ const AppHeader: React.FC = () => {
                 </button>
               </div>
             </form>
-          </div>
+          </div> */}
         </div>
         <div
           className={`${
@@ -160,7 +177,11 @@ const AppHeader: React.FC = () => {
             {/* <!-- Dark Mode Toggler --> */}
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
-            <NotificationDropdown />
+            <NotificationDropdown
+              notifications={notifications}
+              unreadCount={unreadCount}
+              onOpen={onNotificationsSeen}
+            />
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}

@@ -1,28 +1,30 @@
 import { Navigate, Outlet } from "react-router";
-import { jwtDecode } from "jwt-decode";
-
-interface JwtPayload{
-  exp: number;
-}
-
-function isAccessTokenValid() {
-  const token = localStorage.getItem("accessToken");
-  if (!token) return false;
-
-  try {
-    const decoded = jwtDecode<JwtPayload>(token);
-    const now = Date.now() / 1000;
-
-    return decoded.exp > now;
-  } catch (err) {
-    console.error("Something wrong with accessToken",err);
-    return false;
-  }
-}
+import { useEffect, useState } from "react";
+import { useUserStore } from "./store/userStore";
 
 
 export default function PrivateRoute() {
-  return isAccessTokenValid()
-    ? <Outlet />
-    : <Navigate to="/signin" replace />;
+  const accessToken = useUserStore((s) => s.accessToken);
+  
+  const checkToken = useUserStore((s) => s.checkToken);
+
+  const [allowed, setAllowed] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const verify = async () => {
+      if (!accessToken) {
+        setAllowed(false);
+        return;
+      }
+
+      const ok = await checkToken();
+      setAllowed(ok);
+    };
+
+    verify();
+  }, [accessToken, checkToken]);
+
+  if (allowed === null) return null;
+
+  return allowed ? <Outlet /> : <Navigate to="/signin" replace />;
 }
